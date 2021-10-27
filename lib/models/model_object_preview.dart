@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
+//import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 //-------------------------------------------------------------- 
@@ -7,22 +7,21 @@ import 'package:json_annotation/json_annotation.dart';
 //-------------------------------------------------------------- 
 /// Clase para guardar los datos obtenidos de la Url
 @JsonSerializable(explicitToJson: true)
-@immutable
 class PreviewData extends Equatable {
 
   /// Texto descripcion del contenido (usualmente og:description meta tag)
-  final String? description;
+  String? description;
 
   /// ver [PreviewDataImage]
-  final PreviewDataImage? image;
+  PreviewDataImage? image;
 
   /// URL del recurso
-  final String? link;
+  String? link;
 
   /// Link del titulo (usualmente og:title meta tag)
-  final String? title;
+  String? title;
 
-  const PreviewData({
+  PreviewData({
     this.description,
     this.image,
     this.link,
@@ -62,19 +61,20 @@ class PreviewData extends Equatable {
 //-------------------------------------------------------------- 
 /// Clase para cargar caracteristicas de la imagen
 @JsonSerializable(explicitToJson: true)
+// ignore: must_be_immutable
 class PreviewDataImage extends Equatable {
 
   /// Altura de la imagen en pixels
-  final double height;
+  double height;
 
   /// URL de la imagen
-  final String url;
+  String url;
 
   /// ancho en en pixels de la imagen
-  final double width;
+  double width;
 
   /// Clase para cargar caracteristicas de la imagen
-  const PreviewDataImage({
+  PreviewDataImage({
     required this.height,
     required this.url,
     required this.width,
