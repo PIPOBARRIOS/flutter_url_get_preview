@@ -7,6 +7,7 @@ import 'package:json_annotation/json_annotation.dart';
 //-------------------------------------------------------------- 
 /// Clase para guardar los datos obtenidos de la Url
 @JsonSerializable(explicitToJson: true)
+// ignore: must_be_immutable
 class PreviewData extends Equatable {
 
   /// Texto descripcion del contenido (usualmente og:description meta tag)
@@ -22,10 +23,10 @@ class PreviewData extends Equatable {
   String? title;
 
   PreviewData({
-    this.description,
-    this.image,
-    this.link,
-    this.title,
+     this.description,
+     this.image,
+     this.link,
+     this.title,
   });
 
   /// Cargar desde json
