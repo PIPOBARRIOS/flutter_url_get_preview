@@ -17,7 +17,7 @@ class UrlPreViewBloc implements BlocBase
   PreviewData lobRecord = PreviewData();
 
   /// Controlador documentos cargados 
-  PublishSubject<List<PreviewData>> _tmpListController = PublishSubject<List<PreviewData>>();
+  final PublishSubject<List<PreviewData>> _tmpListController = PublishSubject<List<PreviewData>>();
   Sink<List<PreviewData>> get _tmpInList => _tmpListController.sink;
   /// Lista general registro cargados
   Stream<List<PreviewData>> get tmpStreamList => _tmpListController.stream;
@@ -90,6 +90,14 @@ class UrlPreViewBloc implements BlocBase
 
 
     return lobRecord;
+  }
+  //------------------------------------------------
+  // fcvAddRegister: Adicionar registro
+  //------------------------------------------------
+  /// Adicionar registro
+  void fcvAddRegister(PreviewData tobRegister)
+  {
+    _tmpInList.add([tobRegister]);
   }
 
   // Cerrar controladores 
