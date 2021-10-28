@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'blocs/bloc_persistent.dart';
 import 'models/model_object_preview.dart';
+import 'widgets/widgets_sis_menubar_bottomsheet.dart';
 
 void main() {
   runApp(const MyApp());
@@ -65,6 +66,11 @@ class _MyHomePageState extends State<MyHomePage>
 
   void _addPreview()
   {
+    fcvMenuBottomSheetViewList(context, (item){
+      Navigator.pop(context);
+      _homeBloc.fcvAddRegister(item);
+    });
+    /*
     _homeBloc.fcvAddRegister(
       PreviewData(
         title:'Así es el Xperia Pro - 1',
@@ -72,6 +78,7 @@ class _MyHomePageState extends State<MyHomePage>
         link: 'https://external.fbaq6-1.fna.fbcdn.net/safe_image.php?d=AQE8Pewum_QMjfqW&w=400&h=400&url=https%3A%2F%2Fi.blogs.es%2F30c86b%2Fsony%2F840_560.jpeg&cfs=1&ext=emg0&_nc_oe=6eec5&_nc_sid=06c271&ccb=3-5&_nc_hash=AQFdwIDSb3toASkL',
       )
     );
+    */
   }
 
   Widget _setListView()
