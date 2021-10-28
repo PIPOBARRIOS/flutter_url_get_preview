@@ -56,14 +56,31 @@ class _MyHomePageState extends State<MyHomePage>
         title: Text(widget.title),
       ),
       body: _setListView(),
+      /*
       floatingActionButton: FloatingActionButton(
         onPressed: _addPreview,
         tooltip: 'Agregar',
         child: const Icon(Icons.add),
-      ), 
+      ),
+      */ 
     );
   }
 
+  Widget _addPreview()
+  {
+    return Align(
+        alignment: Alignment.bottomRight,
+        child: Container(
+          margin: EdgeInsets.only(bottom: _height *0.0680),
+          alignment: Alignment.center,
+          height: _height * 0.10,
+          width: _width * 0.24,
+          child: _fobBuildButtonAddNewEdition(),
+        ),
+    );
+  }
+
+  /*
   void _addPreview()
   {
     fcvMenuBottomSheetViewList(context, (item){
@@ -80,17 +97,17 @@ class _MyHomePageState extends State<MyHomePage>
     );
     */
   }
+  */
 
   Widget _setListView()
   {
-    return Stack(
-      children: <Widget>[   
-        StreamBuilder<List<PreviewData>>(
+    return StreamBuilder<List<PreviewData>>(
           stream: _homeBloc.tmpStreamList,
           builder: (BuildContext context, AsyncSnapshot<List<PreviewData>> snapshot) {
-            return Stack(
+            return ListView(
               children: <Widget>[
                 ListView.builder(
+                  shrinkWrap: true,
                   scrollDirection: Axis.vertical,
                   itemCount: _fnuItemCount(snapshot.data),
                   itemBuilder: (BuildContext context, index) 
@@ -99,7 +116,33 @@ class _MyHomePageState extends State<MyHomePage>
                     {
                       return _fobBuildPreview(context, index, snapshot.data![index]);
                     }
-                    return Container();
+                    return Container(height: _height*0.80,);
+                  },
+                ),  
+              ]  
+            );  
+          }
+        );
+
+    /*
+    return Stack(
+      children: <Widget>[   
+        StreamBuilder<List<PreviewData>>(
+          stream: _homeBloc.tmpStreamList,
+          builder: (BuildContext context, AsyncSnapshot<List<PreviewData>> snapshot) {
+            return ListView(
+              children: <Widget>[
+                ListView.builder(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.vertical,
+                  itemCount: _fnuItemCount(snapshot.data),
+                  itemBuilder: (BuildContext context, index) 
+                  {
+                    if (snapshot.data != null)
+                    {
+                      return _fobBuildPreview(context, index, snapshot.data![index]);
+                    }
+                    return Container(height: _height*0.80,);
                   },
                 ),  
               ]  
@@ -108,6 +151,7 @@ class _MyHomePageState extends State<MyHomePage>
         ),
       ]
     );
+    */
   }
 
   int _fnuItemCount(List<PreviewData>? tmp) 
