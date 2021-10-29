@@ -9,9 +9,7 @@ void fcvMenuBottomSheetViewList(BuildContext context, Function(PreviewData) fcOn
 {
   var _height = MediaQuery.of(context).size.height;
   //var _width  = MediaQuery.of(context).size.width * 0.95;
-
-  //var _heightView = _height*0.80; 
-  
+ 
   showModalBottomSheet<void>(
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.only(
@@ -96,7 +94,7 @@ Widget _viewForm(BuildContext context)
     return ListView(
       children: <Widget>[
 
-        _fobViewAppBarSearch(),
+        _fobViewAppBarSearch(context),
         Container(
           margin: const EdgeInsets.all(3),
           height: _height* 0.95,
@@ -110,89 +108,90 @@ Widget _viewForm(BuildContext context)
     );
 }
 
-  /// AppBarra de de busqueda
-  Widget _fobViewAppBarSearch() 
-  {
-    return Align(
-        alignment: Alignment.topCenter,
-        child: Container(
-          margin: const EdgeInsets.only(left: 10, right: 10),
-          height: 80,
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            shape: BoxShape.rectangle,),
-          child: _fobTextSearchAndButton(),
+/// AppBarra de de busqueda
+Widget _fobViewAppBarSearch(BuildContext context) 
+{
+  var _height = MediaQuery.of(context).size.height;
+
+  return Align(
+    alignment: Alignment.topCenter,
+    child: Container(
+    margin: const EdgeInsets.only(left: 10, right: 10),
+    height: _height * 0.080,
+    decoration: const BoxDecoration(
+      color: Colors.white,
+      shape: BoxShape.rectangle,),
+      child: _fobTextSearchAndButton(context),
+    ),
+  );
+}
+
+/// Boton para ejecutar la busqueda
+Widget _fobTextSearchAndButton(BuildContext context)
+{
+  final _lobController = TextEditingController();
+  final _lobFocusNode = FocusNode();
+
+  return Stack(
+    alignment: Alignment.bottomCenter,
+    children: <Widget>[
+      Container(
+        height: 40,
+        margin: const EdgeInsets.only(left: 10, right: 60, bottom: 7),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(30),
         ),
-      );
-  }
-
-  /// Boton para ejecutar la busqueda
-  Widget _fobTextSearchAndButton()
-  {
-    final _lobController = TextEditingController();
-    //final _lobFocusNode = FocusNode();
-
-    return Stack(
-      alignment: Alignment.bottomCenter,
-      children: <Widget>[
-        Container(
-          height: 40,
-          margin: const EdgeInsets.only(left: 10, right: 60, bottom: 7),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(30),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.only(left: 37, top: 2, bottom: 2),
-            child: TextField(
+        child: Padding(
+          padding: const EdgeInsets.only(left: 37, top: 2, bottom: 2),
+          child: TextField(
               decoration: const InputDecoration(
               hintText: 'Copia el link aqui...' ,
               border: UnderlineInputBorder(),
-              ),  
-              controller: _lobController,
-              //focusNode: _lobFocusNode,
-            ),
+            ),  
+            controller: _lobController,
+            focusNode: _lobFocusNode,
           ),
         ),
-            
-        //  limpiar el cuadro de texto
-        _lobController.text.isEmpty ? Container() :
-        Container(
-          height: 30,
-          margin: const EdgeInsets.only(left: 2, bottom: 12),
-          alignment: Alignment.bottomLeft,
-          child: FloatingActionButton(
-            heroTag: UniqueKey(),
-            child: const Icon(Icons.close),
-            elevation: 5,
-            backgroundColor: Colors.redAccent,
-            onPressed: () {
-              _lobController.clear();
-              _fcvStarSearch();
-            } 
-          ),
-        ),      
-        // Ejecutar busqueda
-        Container(
-          height: 40,
-          margin: const EdgeInsets.only(right: 52, bottom: 7),
-          alignment: Alignment.bottomRight,
-          child: FloatingActionButton(
-            heroTag: UniqueKey(),
-            child: const Icon(Icons.search),
-            elevation: 5,
-            backgroundColor: Colors.teal[300],
-            onPressed: () {
+      ),
+      //  limpiar el cuadro de texto
+      _lobController.text.isEmpty ? Container() :
+      Container(
+        height: 30,
+        margin: const EdgeInsets.only(left: 2, bottom: 12),
+        alignment: Alignment.bottomLeft,
+        child: FloatingActionButton(
+          heroTag: UniqueKey(),
+          child: const Icon(Icons.close),
+          elevation: 5,
+          backgroundColor: Colors.redAccent,
+          onPressed: () {
+            _lobController.clear();
+            _fcvStarSearch();
+          } 
+        ),
+      ),      
+      // Ejecutar busqueda
+      Container(
+        height: 40,
+        margin: const EdgeInsets.only(right: 52, bottom: 7),
+        alignment: Alignment.bottomRight,
+        child: FloatingActionButton(
+          heroTag: UniqueKey(),
+          child: const Icon(Icons.search),
+          elevation: 5,
+          backgroundColor: Colors.teal[300],
+          onPressed: () {
               //Lanzar la busqueda
               _fcvStarSearch();
-            }
-          ),
+          }
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
+}
 
-  /// Realizar busqueda
-  void _fcvStarSearch()
-  {
-  }
+/// Realizar busqueda
+void _fcvStarSearch()
+{
+}
