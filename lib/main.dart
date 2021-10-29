@@ -56,31 +56,14 @@ class _MyHomePageState extends State<MyHomePage>
         title: Text(widget.title),
       ),
       body: _setListView(),
-      /*
       floatingActionButton: FloatingActionButton(
         onPressed: _addPreview,
         tooltip: 'Agregar',
         child: const Icon(Icons.add),
       ),
-      */ 
     );
   }
 
-  Widget _addPreview()
-  {
-    return Align(
-        alignment: Alignment.bottomRight,
-        child: Container(
-          margin: EdgeInsets.only(bottom: _height *0.0680),
-          alignment: Alignment.center,
-          height: _height * 0.10,
-          width: _width * 0.24,
-          child: _fobBuildButtonAddNewEdition(),
-        ),
-    );
-  }
-
-  /*
   void _addPreview()
   {
     fcvMenuBottomSheetViewList(context, (item){
@@ -97,7 +80,6 @@ class _MyHomePageState extends State<MyHomePage>
     );
     */
   }
-  */
 
   Widget _setListView()
   {
@@ -118,7 +100,11 @@ class _MyHomePageState extends State<MyHomePage>
                     }
                     return Container(height: _height*0.80,);
                   },
-                ),  
+                ),
+
+                // Agregar nuevo registro
+                //_addNewPreView(context),
+
               ]  
             );  
           }
@@ -205,4 +191,38 @@ class _MyHomePageState extends State<MyHomePage>
       )
     );
   }
+
+  /// Boton agregar nuevo registro
+  Widget _addNewPreView(BuildContext context)
+  {
+    return Align(
+        alignment: Alignment.bottomRight,
+        child: Container(
+          margin: EdgeInsets.only(bottom: _height *0.0680),
+          alignment: Alignment.center,
+          height: _height * 0.10,
+          width: _width * 0.24,
+          child: _addNewPreViewButton(context),
+        ),
+    );
+  }
+
+  Widget _addNewPreViewButton(BuildContext context)
+  {
+    return FloatingActionButton(
+      heroTag: UniqueKey(),
+      child: const Icon(Icons.add, color:Colors.white),
+      elevation: 5,
+      backgroundColor: Colors.blue,
+      onPressed: (){
+
+        fcvMenuBottomSheetViewList(context, (item){
+          Navigator.pop(context);
+          _homeBloc.fcvAddRegister(item);
+        });
+        
+      },
+    );
+  }
+
 }

@@ -25,11 +25,11 @@ void fcvMenuBottomSheetViewList(BuildContext context, Function(PreviewData) fcOn
         child: Container(
           padding: const EdgeInsets.only(top: 10.0),
           alignment: Alignment.center,          
-          height: 120,
-          child: ListView(
+          height: _height*0.80,
+          child: Stack(
             children: <Widget>[
                 // Campos para captura
-              ViewForm(key:  const Key('M10-657-776754545'), context: context),
+              _viewForm(context),
               _fobBuildButtonSaveLink(fcOnSelectItem),
             ],
           ),
@@ -54,21 +54,24 @@ Widget _fobBuildButtonSaveLink(Function(PreviewData) fcOnSelectItem)
 /// Mostrar Boton debajo del mensaje
 Widget _fobViewButtonAction(String tcrLabel,  VoidCallback tobButtonPressed)
 {
-  return MaterialButton(
-    height: 40,
-    minWidth: 70,
-    color: Colors.blue,
-    child: Container(
-      alignment: Alignment.center,
-      height: 25,
-      width: 90,
-      child: Text(tcrLabel.toString(), 
-        style: const TextStyle(
-        color: Colors.white,
-        fontSize: 16)
-      ),
-    ),    
-    onPressed: tobButtonPressed
+  return Align(
+    alignment: Alignment.bottomCenter,
+    child: MaterialButton(
+      height: 40,
+      minWidth: 70,
+      color: Colors.blue,
+      child: Container(
+        alignment: Alignment.center,
+        height: 25,
+        width: 90,
+        child: Text(tcrLabel.toString(), 
+          style: const TextStyle(
+          color: Colors.white,
+          fontSize: 16)
+        ),
+      ),    
+      onPressed: tobButtonPressed
+    ),
   );
 }
 
@@ -86,24 +89,17 @@ PreviewData _setPreviewRegister()
 //---------------------------------------------------------------------------
 
 /// Vista formulario
-class ViewForm extends StatelessWidget
+Widget _viewForm(BuildContext context)
 {
-  final Key? key;
-  final BuildContext context; 
-
-  const ViewForm({this.key, required this.context}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) 
-  {
     var _height = MediaQuery.of(context).size.height;
 
     return ListView(
       children: <Widget>[
-        _fobViewAppBarSearch(),
 
+        _fobViewAppBarSearch(),
         Container(
-          height: _height* 0.80,
+          margin: const EdgeInsets.all(3),
+          height: _height* 0.95,
           decoration: const BoxDecoration(
             color: Colors.blue,
             shape: BoxShape.rectangle,),
@@ -112,7 +108,7 @@ class ViewForm extends StatelessWidget
 
       ],
     );
-  }
+}
 
   /// AppBarra de de busqueda
   Widget _fobViewAppBarSearch() 
@@ -120,9 +116,10 @@ class ViewForm extends StatelessWidget
     return Align(
         alignment: Alignment.topCenter,
         child: Container(
+          margin: const EdgeInsets.only(left: 10, right: 10),
           height: 80,
           decoration: const BoxDecoration(
-            color: Colors.blue,
+            color: Colors.white,
             shape: BoxShape.rectangle,),
           child: _fobTextSearchAndButton(),
         ),
@@ -133,7 +130,7 @@ class ViewForm extends StatelessWidget
   Widget _fobTextSearchAndButton()
   {
     final _lobController = TextEditingController();
-    final _lobFocusNode = FocusNode();
+    //final _lobFocusNode = FocusNode();
 
     return Stack(
       alignment: Alignment.bottomCenter,
@@ -150,10 +147,10 @@ class ViewForm extends StatelessWidget
             child: TextField(
               decoration: const InputDecoration(
               hintText: 'Copia el link aqui...' ,
-              border: InputBorder.none,
+              border: UnderlineInputBorder(),
               ),  
               controller: _lobController,
-              focusNode: _lobFocusNode,
+              //focusNode: _lobFocusNode,
             ),
           ),
         ),
@@ -165,7 +162,7 @@ class ViewForm extends StatelessWidget
           margin: const EdgeInsets.only(left: 2, bottom: 12),
           alignment: Alignment.bottomLeft,
           child: FloatingActionButton(
-            heroTag: const Key("LOCER-45667-01"),
+            heroTag: UniqueKey(),
             child: const Icon(Icons.close),
             elevation: 5,
             backgroundColor: Colors.redAccent,
@@ -181,7 +178,7 @@ class ViewForm extends StatelessWidget
           margin: const EdgeInsets.only(right: 52, bottom: 7),
           alignment: Alignment.bottomRight,
           child: FloatingActionButton(
-            heroTag: const Key("LOCER-4536555467-02"),
+            heroTag: UniqueKey(),
             child: const Icon(Icons.search),
             elevation: 5,
             backgroundColor: Colors.teal[300],
@@ -199,4 +196,3 @@ class ViewForm extends StatelessWidget
   void _fcvStarSearch()
   {
   }
-}
