@@ -4,13 +4,8 @@ import 'package:bloc/bloc.dart';
 import '../models/model_object_preview.dart';
 import 'package:rxdart/rxdart.dart';
 
-//import '../utility/utility.dart';
-//import '../models/model_saleoffer.dart';
-//import 'bloc_saleoffer_behavior_validator.dart';
 
-///
-///  GESTION VALIDACION PARA FORMULARIO CAPTURA DE DATOS PARTICIPANTES EN UNA OFERTA
-///
+///  Persistencia de datos
 class UrlPreViewBloc implements BlocBase
 {
   /// Registro dado desde temporal que viene desde la base de datos
@@ -26,8 +21,8 @@ class UrlPreViewBloc implements BlocBase
   // Declaración controladores
   //------------------------------------------------
 
-  /// Descripcion de la oferta
-  final BehaviorSubject<String> _g1noteController = BehaviorSubject<String>.seeded("3");
+  /// Para gestion de la url copiada
+  final BehaviorSubject<String> _g1urlController = BehaviorSubject<String>.seeded("");
   /// Dirección residencia 
   final BehaviorSubject<String> _g1addressController = BehaviorSubject<String>.seeded("");
   /// Precio o valor economico 
@@ -36,16 +31,14 @@ class UrlPreViewBloc implements BlocBase
   //------------------------------------------------
   // Flujo de datos
   //------------------------------------------------
-  /*
-  Stream<String> get g1note => _g1noteController.stream.transform(fcrValidnote);
-  Stream<String> get g1address => _g1addressController.stream.transform(fcrValidaddress);
-  Stream<String> get g1price => _g1priceController.stream.transform(fflValidprice);
-  */
+  Stream<String> get g1Url => _g1urlController.stream;
+  //Stream<String> get g1address => _g1addressController.stream.transform(fcrValidaddress);
+  //Stream<String> get g1price => _g1priceController.stream.transform(fflValidprice);
   //------------------------------------------------
   // Funciones Validacion 
   //------------------------------------------------
-  /// Descripcion de la oferta
-  Function(String) get onG1noteChanged => _g1noteController.sink.add;
+  /// Url copiada
+  Function(String) get onG1UrlChanged => _g1urlController.sink.add;
   /// Dirección residencia
   Function(String) get onG1addressChanged => _g1addressController.sink.add;
   /// Precio o valor
@@ -68,7 +61,7 @@ class UrlPreViewBloc implements BlocBase
   /// Limpiar datos
   void fcvResetData()
   {
-    _g1noteController.sink.add('');
+    _g1urlController.sink.add('');
     _g1addressController.sink.add('');
     _g1priceController.sink.add('');
   }
@@ -80,8 +73,8 @@ class UrlPreViewBloc implements BlocBase
   PreviewData fobGetRegisterDataGestion()
   {
 
-    _g1noteController.stream.listen((onData) {
-     lobRecord.title = onData;
+    _g1urlController.stream.listen((onData) {
+     lobRecord.link = onData;
     });
 
     _g1addressController.stream.listen((onData) {
@@ -103,7 +96,7 @@ class UrlPreViewBloc implements BlocBase
   // Cerrar controladores 
   void dispose() {
     _tmpListController.close();
-    _g1noteController.close();
+    _g1urlController.close();
     _g1addressController.close();
     _g1priceController.close();
  }

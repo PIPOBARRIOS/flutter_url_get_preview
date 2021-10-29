@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'blocs/bloc_persistent.dart';
 import 'models/model_object_preview.dart';
@@ -13,6 +14,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    return BlocProvider<UrlPreViewBloc>(
+      create: (context) => UrlPreViewBloc(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Aplicación Vista Url',
+          theme: ThemeData( primarySwatch: Colors.blue,),
+          home: const MyHomePage(title: 'Vista Previa Url'),
+      ),
+    );
+
+    /*
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -20,6 +33,7 @@ class MyApp extends StatelessWidget {
       ),
       home: const MyHomePage(title: 'Vista Previa Url'),
     );
+    */
   }
 }
 
@@ -35,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage>
 {
   double _height = 0;
   double _width = 0;
-  UrlPreViewBloc _homeBloc = UrlPreViewBloc();  
+  final UrlPreViewBloc _homeBloc = UrlPreViewBloc();  
 
   late final List<PreviewData> _tmpData=[
     PreviewData(

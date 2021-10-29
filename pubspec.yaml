@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   bloc: ^7.0.0
+  flutter_bloc: ^7.0.1
   rxdart: ^0.26.0
   equatable: ^2.0.0
   json_annotation: ^4.0.1

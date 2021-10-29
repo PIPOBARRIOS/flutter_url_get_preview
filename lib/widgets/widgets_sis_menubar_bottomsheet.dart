@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../blocs/bloc_persistent.dart';
 import '../models/model_object_preview.dart';
 
 //---------------------------------------------------------------------------
@@ -23,7 +25,7 @@ void fcvMenuBottomSheetViewList(BuildContext context, Function(PreviewData) fcOn
         child: Container(
           padding: const EdgeInsets.only(top: 10.0),
           alignment: Alignment.center,          
-          height: _height*0.80,
+          height: _height*0.95,
           child: Stack(
             children: <Widget>[
                 // Campos para captura
@@ -96,10 +98,10 @@ Widget _viewForm(BuildContext context)
 
         _fobViewAppBarSearch(context),
         Container(
-          margin: const EdgeInsets.all(3),
-          height: _height* 0.95,
+          margin: const EdgeInsets.all(5),
+          height: _height* 0.40,
           decoration: const BoxDecoration(
-            color: Colors.blue,
+            color: Colors.grey,
             shape: BoxShape.rectangle,),
           //child: _fobTextSearchAndButton(),
         ),
@@ -111,15 +113,17 @@ Widget _viewForm(BuildContext context)
 /// AppBarra de de busqueda
 Widget _fobViewAppBarSearch(BuildContext context) 
 {
-  var _height = MediaQuery.of(context).size.height;
+  //var _height = MediaQuery.of(context).size.height;
+  double _width = MediaQuery.of(context).size.width;
 
   return Align(
     alignment: Alignment.topCenter,
     child: Container(
-    margin: const EdgeInsets.only(left: 10, right: 10),
-    height: _height * 0.080,
+    margin: const EdgeInsets.only(left: 2, top: 10, right: 2),
+    height: 52,
+    width: _width*0.97,
     decoration: const BoxDecoration(
-      color: Colors.white,
+      color: Colors.brown,
       shape: BoxShape.rectangle,),
       child: _fobTextSearchAndButton(context),
     ),
@@ -129,65 +133,112 @@ Widget _fobViewAppBarSearch(BuildContext context)
 /// Boton para ejecutar la busqueda
 Widget _fobTextSearchAndButton(BuildContext context)
 {
+  double _width = MediaQuery.of(context).size.width;
+
+  //final UrlPreViewBloc _homeBloc = UrlPreViewBloc();  
+  final UrlPreViewBloc _homeBloc = BlocProvider.of<UrlPreViewBloc>(context);
+
   final _lobController = TextEditingController();
   final _lobFocusNode = FocusNode();
 
-  return Stack(
-    alignment: Alignment.bottomCenter,
-    children: <Widget>[
-      Container(
-        height: 40,
-        margin: const EdgeInsets.only(left: 10, right: 60, bottom: 7),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(30),
+  // cargar los datos desde Bloc
+  var data = _homeBloc.fobGetRegisterDataGestion();
+  _lobController.text = data.link != null ? data.link!: '';
+
+  return Container(
+    //alignment: Alignment.bottomCenter,
+    margin: const EdgeInsets.all(3),
+    decoration: BoxDecoration(
+      color: Colors.grey[100],
+      borderRadius: BorderRadius.circular(40),
+    ),
+    child: Stack(
+      children: <Widget>[
+
+        // icono  
+        Container(
+          margin: const EdgeInsets.only(left: 5, top: 3),
+          child: const Icon(Icons.link, 
+          color: Colors.grey,
+          size: 40,),
         ),
-        child: Padding(
-          padding: const EdgeInsets.only(left: 37, top: 2, bottom: 2),
-          child: TextField(
-              decoration: const InputDecoration(
-              hintText: 'Copia el link aqui...' ,
-              border: UnderlineInputBorder(),
-            ),  
-            controller: _lobController,
-            focusNode: _lobFocusNode,
-          ),
-        ),
-      ),
-      //  limpiar el cuadro de texto
-      _lobController.text.isEmpty ? Container() :
-      Container(
-        height: 30,
-        margin: const EdgeInsets.only(left: 2, bottom: 12),
-        alignment: Alignment.bottomLeft,
-        child: FloatingActionButton(
-          heroTag: UniqueKey(),
-          child: const Icon(Icons.close),
-          elevation: 5,
-          backgroundColor: Colors.redAccent,
-          onPressed: () {
-            _lobController.clear();
-            _fcvStarSearch();
-          } 
-        ),
-      ),      
-      // Ejecutar busqueda
-      Container(
-        height: 40,
-        margin: const EdgeInsets.only(right: 52, bottom: 7),
-        alignment: Alignment.bottomRight,
-        child: FloatingActionButton(
-          heroTag: UniqueKey(),
-          child: const Icon(Icons.search),
-          elevation: 5,
-          backgroundColor: Colors.teal[300],
-          onPressed: () {
-              //Lanzar la busqueda
-              _fcvStarSearch();
+        StreamBuilder<String>(
+          stream: _homeBloc.g1Url,
+          builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+            return  Container(
+              color: Colors.amber,
+              width: _width*0.70,
+              height: 45,
+              padding: const EdgeInsets.only(left: 5, top: 14),
+              margin: const EdgeInsets.only(left: 50, top: 5, bottom: 5),
+              child: TextField(
+                decoration: const InputDecoration(
+                  hintText: 'Pega el link aqui...' ,
+                  border: InputBorder.none,
+                ),
+                controller: _lobController,
+                focusNode: _lobFocusNode,
+                onChanged: _homeBloc.onG1UrlChanged,
+              )
+            );
           }
         ),
-      ),
-    ],
+
+        /*
+        // Texto
+        Container(
+          color: Colors.amber,
+          width: _width*0.70,
+          height: 45,
+          padding: const EdgeInsets.only(left: 5, top: 14),
+          margin: const EdgeInsets.only(left: 50, top: 5, bottom: 5),
+          child: TextField(
+              decoration: const InputDecoration(
+                hintText: 'Pega el link aqui...' ,
+                border: InputBorder.none,
+              ),  
+            controller: _lobController,
+            focusNode: _lobFocusNode,
+            textCapitalization: TextCapitalization.sentences,
+          ),
+        ),
+        */
+        //  limpiar el cuadro de texto
+        _lobController.text.isEmpty ? Container() :
+        Container(
+          height: 45,
+          //margin: const EdgeInsets.only(left: 2, bottom: 12),
+          alignment: Alignment.centerRight,
+          child: FloatingActionButton(
+            heroTag: UniqueKey(),
+            child: const Icon(Icons.close),
+            elevation: 5,
+            backgroundColor: Colors.redAccent,
+            onPressed: () {
+              _lobController.clear();
+              _fcvStarSearch();
+            } 
+          ),
+        ),  
+        // Ejecutar busqueda
+        Container(
+          height: 45,
+          //color: Colors.cyan,
+          margin: const EdgeInsets.only(top: 5, bottom: 7),
+          alignment: Alignment.centerRight,
+          child: FloatingActionButton(
+            heroTag: UniqueKey(),
+            child: const Icon(Icons.search),
+            elevation: 5,
+            backgroundColor: Colors.teal[300],
+            onPressed: () {
+                //Lanzar la busqueda
+                _fcvStarSearch();
+            }
+          ),
+        ),
+      ],
+    ),
   );
 }
 
