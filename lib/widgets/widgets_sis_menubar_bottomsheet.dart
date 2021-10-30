@@ -209,7 +209,8 @@ Widget _fobViewAppBarSearch(UrlPreViewBloc bloc, BuildContext context)
   );
 }
 
-/// Realizar busqueda
-void _fcvStarSearch()
+/// Realizar busqueda  de la url dentro del texto
+void _fcvStarSearch(String tcrText)
 {
+  var lob = getPreviewData(tcrText);
 }
