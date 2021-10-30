@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import '../blocs/bloc_persistent.dart';
 import '../models/model_object_preview.dart';
 
@@ -111,28 +110,6 @@ Widget _viewForm(UrlPreViewBloc bloc,BuildContext context)
       ],
     );
 }
-
-/*
-/// AppBarra de de busqueda
-Widget _fobViewAppBarSearch(UrlPreViewBloc bloc,BuildContext context) 
-{
-  //var _height = MediaQuery.of(context).size.height;
-  double _width = MediaQuery.of(context).size.width;
-
-  return Align(
-    alignment: Alignment.topCenter,
-    child: Container(
-    margin: const EdgeInsets.only(left: 2, top: 10, right: 2),
-    height: 52,
-    width: _width*0.97,
-    decoration: const BoxDecoration(
-      color: Colors.brown,
-      shape: BoxShape.rectangle,),
-      child: _fobTextSearchAndButton(context),
-    ),
-  );
-}
-*/
 
 /// Boton para ejecutar la busqueda
 Widget _fobViewAppBarSearch(UrlPreViewBloc bloc, BuildContext context)
