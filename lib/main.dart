@@ -9,12 +9,14 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatelessWidget 
+{
   const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
 
+    /*
     return BlocProvider<UrlPreViewBloc>(
       create: (context) => UrlPreViewBloc(),
       child: MaterialApp(
@@ -24,16 +26,15 @@ class MyApp extends StatelessWidget {
           home: const MyHomePage(title: 'Vista Previa Url'),
       ),
     );
+    */
 
-    /*
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Vista url',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       home: const MyHomePage(title: 'Vista Previa Url'),
     );
-    */
   }
 }
 

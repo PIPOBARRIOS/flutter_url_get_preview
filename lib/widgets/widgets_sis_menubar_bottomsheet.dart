@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import '../utility/functions.dart';
 import '../blocs/bloc_persistent.dart';
 import '../models/model_object_preview.dart';
+
+PreviewData? lobRegister;
 
 //---------------------------------------------------------------------------
 // Vista tipo Lista
@@ -78,6 +81,10 @@ Widget _fobViewButtonAction(String tcrLabel,  VoidCallback tobButtonPressed)
 
 PreviewData _setPreviewRegister()
 {
+  if (lobRegister != null)
+  {
+    return lobRegister!;
+  }
   return  PreviewData(
     title:'Así es el Xperia Pro - 1',
     description: 'Así es el Xperia Pro - 1, el primer móvil de Sony con sensor de una pulgada (y Snapdragon 888,  pantalla OLED 4K a 120Hz y 512 GB de memoria interna...) #sonyxperiapro1',
@@ -200,7 +207,7 @@ Widget _fobViewAppBarSearch(UrlPreViewBloc bloc, BuildContext context)
             backgroundColor: Colors.teal[300],
             onPressed: () {
               //Lanzar la busqueda
-              _fcvStarSearch();
+              _fcvStarSearch(_lobController.text);
             }
           ),
         ),
@@ -212,5 +219,8 @@ Widget _fobViewAppBarSearch(UrlPreViewBloc bloc, BuildContext context)
 /// Realizar busqueda  de la url dentro del texto
 void _fcvStarSearch(String tcrText)
 {
-  var lob = getPreviewData(tcrText);
+  lobRegister = null;
+  getPreviewData(tcrText).then((value) {
+    lobRegister = value;
+  });
 }
