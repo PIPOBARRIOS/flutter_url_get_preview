@@ -44,17 +44,31 @@ class UrlPreViewBloc implements BlocBase
   /// Precio o valor
   Function(String) get onG1priceChanged => _g1priceController.sink.add;
 
-  //------------------------------------------------
-  // Funciones para mostrar y activacion del boton Guardar 
-  // combineLatest: puede ser combineLatest3,combineLatest4,combineLatest5... 15
-  //------------------------------------------------
   /*
+  //------------------------------------------------
+  // activacion botones
+  //------------------------------------------------
+  /// activacion del boton Guardar 
   Stream<bool> get onActivateCREATE => Rx.combineLatest3(
                                       g1note, 
                                       g1address,
                                       g1price,
                                       (a, b, c) => true);
   */
+
+  /// activacion los botones de accion
+  Stream<bool> get onActivateAccion => streamActiveButtomClear();
+  Stream<bool> streamActiveButtomClear()
+  {
+     Stream<bool> _llgReturn = BehaviorSubject<bool>.seeded(false);
+
+    _g1urlController.stream.listen((onData) {
+      _llgReturn  = BehaviorSubject<bool>.seeded(onData.isNotEmpty); 
+    });
+
+    return _llgReturn;
+  }
+
   //------------------------------------------------
   // Funciones Limpiar datos
   //------------------------------------------------

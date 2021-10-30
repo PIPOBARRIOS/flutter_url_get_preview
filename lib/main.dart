@@ -49,8 +49,9 @@ class _MyHomePageState extends State<MyHomePage>
 {
   double _height = 0;
   double _width = 0;
-  final UrlPreViewBloc _homeBloc = UrlPreViewBloc();  
+  final UrlPreViewBloc _bloc = UrlPreViewBloc();  
 
+  /*
   late final List<PreviewData> _tmpData=[
     PreviewData(
       title:'Así es el Xperia Pro - 1',
@@ -58,6 +59,7 @@ class _MyHomePageState extends State<MyHomePage>
       link: 'https://external.fbaq6-1.fna.fbcdn.net/safe_image.php?d=AQE8Pewum_QMjfqW&w=400&h=400&url=https%3A%2F%2Fi.blogs.es%2F30c86b%2Fsony%2F840_560.jpeg&cfs=1&ext=emg0&_nc_oe=6eec5&_nc_sid=06c271&ccb=3-5&_nc_hash=AQFdwIDSb3toASkL',
     )
   ];
+  */
 
   @override
   Widget build(BuildContext context) 
@@ -80,9 +82,9 @@ class _MyHomePageState extends State<MyHomePage>
 
   void _addPreview()
   {
-    fcvMenuBottomSheetViewList(context, (item){
+    fcvMenuBottomSheetViewList(_bloc, context, (item){
       Navigator.pop(context);
-      _homeBloc.fcvAddRegister(item);
+      _bloc.fcvAddRegister(item);
     });
     /*
     _homeBloc.fcvAddRegister(
@@ -98,60 +100,26 @@ class _MyHomePageState extends State<MyHomePage>
   Widget _setListView()
   {
     return StreamBuilder<List<PreviewData>>(
-          stream: _homeBloc.tmpStreamList,
-          builder: (BuildContext context, AsyncSnapshot<List<PreviewData>> snapshot) {
-            return ListView(
-              children: <Widget>[
-                ListView.builder(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.vertical,
-                  itemCount: _fnuItemCount(snapshot.data),
-                  itemBuilder: (BuildContext context, index) 
-                  {
-                    if (snapshot.data != null)
-                    {
-                      return _fobBuildPreview(context, index, snapshot.data![index]);
-                    }
-                    return Container(height: _height*0.80,);
-                  },
-                ),
-
-                // Agregar nuevo registro
-                //_addNewPreView(context),
-
-              ]  
-            );  
-          }
-        );
-
-    /*
-    return Stack(
-      children: <Widget>[   
-        StreamBuilder<List<PreviewData>>(
-          stream: _homeBloc.tmpStreamList,
-          builder: (BuildContext context, AsyncSnapshot<List<PreviewData>> snapshot) {
-            return ListView(
-              children: <Widget>[
-                ListView.builder(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.vertical,
-                  itemCount: _fnuItemCount(snapshot.data),
-                  itemBuilder: (BuildContext context, index) 
-                  {
-                    if (snapshot.data != null)
-                    {
-                      return _fobBuildPreview(context, index, snapshot.data![index]);
-                    }
-                    return Container(height: _height*0.80,);
-                  },
-                ),  
-              ]  
-            );  
-          }
-        ),
-      ]
+      stream: _bloc.tmpStreamList,
+      builder: (BuildContext context, AsyncSnapshot<List<PreviewData>> snapshot) {
+        return ListView(
+          children: <Widget>[
+            ListView.builder(
+              shrinkWrap: true,
+              scrollDirection: Axis.vertical,
+              itemCount: _fnuItemCount(snapshot.data),
+              itemBuilder: (BuildContext context, index) {
+                if (snapshot.data != null)
+                {
+                  return _fobBuildPreview(context, index, snapshot.data![index]);
+                }
+                return Container(height: _height*0.80,);
+              }
+            ),
+          ]  
+        );  
+      }
     );
-    */
   }
 
   int _fnuItemCount(List<PreviewData>? tmp) 
@@ -175,7 +143,6 @@ class _MyHomePageState extends State<MyHomePage>
           borderRadius: BorderRadius.circular(30),
           child: Column(
             children: <Widget>[
-
               const SizedBox(height: 30),
               // Titulo
               Container(
@@ -230,9 +197,9 @@ class _MyHomePageState extends State<MyHomePage>
       backgroundColor: Colors.blue,
       onPressed: (){
 
-        fcvMenuBottomSheetViewList(context, (item){
+        fcvMenuBottomSheetViewList(_bloc,context, (item){
           Navigator.pop(context);
-          _homeBloc.fcvAddRegister(item);
+          _bloc.fcvAddRegister(item);
         });
         
       },

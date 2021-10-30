@@ -7,7 +7,9 @@ import '../models/model_object_preview.dart';
 // Vista tipo Lista
 //---------------------------------------------------------------------------
 /// Menu tipo Hoja inferior
-void fcvMenuBottomSheetViewList(BuildContext context, Function(PreviewData) fcOnSelectItem)
+void fcvMenuBottomSheetViewList(UrlPreViewBloc bloc, 
+                                BuildContext context, 
+                                Function(PreviewData) fcOnSelectItem)
 {
   var _height = MediaQuery.of(context).size.height;
   //var _width  = MediaQuery.of(context).size.width * 0.95;
@@ -29,7 +31,7 @@ void fcvMenuBottomSheetViewList(BuildContext context, Function(PreviewData) fcOn
           child: Stack(
             children: <Widget>[
                 // Campos para captura
-              _viewForm(context),
+              _viewForm(bloc,context),
               _fobBuildButtonSaveLink(fcOnSelectItem),
             ],
           ),
@@ -89,14 +91,14 @@ PreviewData _setPreviewRegister()
 //---------------------------------------------------------------------------
 
 /// Vista formulario
-Widget _viewForm(BuildContext context)
+Widget _viewForm(UrlPreViewBloc bloc,BuildContext context)
 {
     var _height = MediaQuery.of(context).size.height;
 
     return ListView(
       children: <Widget>[
 
-        _fobViewAppBarSearch(context),
+        _fobViewAppBarSearch(bloc, context),
         Container(
           margin: const EdgeInsets.all(5),
           height: _height* 0.40,
@@ -110,8 +112,9 @@ Widget _viewForm(BuildContext context)
     );
 }
 
+/*
 /// AppBarra de de busqueda
-Widget _fobViewAppBarSearch(BuildContext context) 
+Widget _fobViewAppBarSearch(UrlPreViewBloc bloc,BuildContext context) 
 {
   //var _height = MediaQuery.of(context).size.height;
   double _width = MediaQuery.of(context).size.width;
@@ -129,23 +132,23 @@ Widget _fobViewAppBarSearch(BuildContext context)
     ),
   );
 }
+*/
 
 /// Boton para ejecutar la busqueda
-Widget _fobTextSearchAndButton(BuildContext context)
+Widget _fobViewAppBarSearch(UrlPreViewBloc bloc, BuildContext context)
 {
   double _width = MediaQuery.of(context).size.width;
-
-  //final UrlPreViewBloc _homeBloc = UrlPreViewBloc();  
-  final UrlPreViewBloc _homeBloc = BlocProvider.of<UrlPreViewBloc>(context);
 
   final _lobController = TextEditingController();
   final _lobFocusNode = FocusNode();
 
   // cargar los datos desde Bloc
-  var data = _homeBloc.fobGetRegisterDataGestion();
+  var data = bloc.fobGetRegisterDataGestion();
   _lobController.text = data.link != null ? data.link!: '';
 
-  return Container(
+  return Align(
+    alignment: Alignment.topCenter,
+    child: Container(
     //alignment: Alignment.bottomCenter,
     margin: const EdgeInsets.all(3),
     decoration: BoxDecoration(
@@ -154,7 +157,6 @@ Widget _fobTextSearchAndButton(BuildContext context)
     ),
     child: Stack(
       children: <Widget>[
-
         // icono  
         Container(
           margin: const EdgeInsets.only(left: 5, top: 3),
@@ -163,10 +165,10 @@ Widget _fobTextSearchAndButton(BuildContext context)
           size: 40,),
         ),
         StreamBuilder<String>(
-          stream: _homeBloc.g1Url,
+          stream: bloc.g1Url,
           builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
             return  Container(
-              color: Colors.amber,
+              //color: Colors.amber,
               width: _width*0.70,
               height: 45,
               padding: const EdgeInsets.only(left: 5, top: 14),
@@ -178,49 +180,37 @@ Widget _fobTextSearchAndButton(BuildContext context)
                 ),
                 controller: _lobController,
                 focusNode: _lobFocusNode,
-                onChanged: _homeBloc.onG1UrlChanged,
+                onChanged: bloc.onG1UrlChanged,
               )
             );
           }
         ),
+        // Boton limpiar texto
+        StreamBuilder<bool>(
+          stream: bloc.onActivateAccion,
+          builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
 
-        /*
-        // Texto
-        Container(
-          color: Colors.amber,
-          width: _width*0.70,
-          height: 45,
-          padding: const EdgeInsets.only(left: 5, top: 14),
-          margin: const EdgeInsets.only(left: 50, top: 5, bottom: 5),
-          child: TextField(
-              decoration: const InputDecoration(
-                hintText: 'Pega el link aqui...' ,
-                border: InputBorder.none,
-              ),  
-            controller: _lobController,
-            focusNode: _lobFocusNode,
-            textCapitalization: TextCapitalization.sentences,
-          ),
+            return snapshot.hasData == true && snapshot.data == true ?
+              Container(
+                height: 45,
+                margin: const EdgeInsets.only(top: 5, bottom: 7, right: 30),
+                alignment: Alignment.centerRight,
+                child: FloatingActionButton(
+                  heroTag: UniqueKey(),
+                  child: const Icon(Icons.close),
+                  elevation: 5,
+                  backgroundColor: Colors.redAccent,
+                  onPressed: () {
+                    _lobController.clear();
+                    //_fcvStarSearch();
+                  } 
+                ),
+              ) :
+              Container();
+            //return _fobBuildViewButton(snapshot);
+          }
         ),
-        */
-        //  limpiar el cuadro de texto
-        _lobController.text.isEmpty ? Container() :
-        Container(
-          height: 45,
-          //margin: const EdgeInsets.only(left: 2, bottom: 12),
-          alignment: Alignment.centerRight,
-          child: FloatingActionButton(
-            heroTag: UniqueKey(),
-            child: const Icon(Icons.close),
-            elevation: 5,
-            backgroundColor: Colors.redAccent,
-            onPressed: () {
-              _lobController.clear();
-              _fcvStarSearch();
-            } 
-          ),
-        ),  
-        // Ejecutar busqueda
+              // Ejecutar busqueda
         Container(
           height: 45,
           //color: Colors.cyan,
@@ -232,13 +222,13 @@ Widget _fobTextSearchAndButton(BuildContext context)
             elevation: 5,
             backgroundColor: Colors.teal[300],
             onPressed: () {
-                //Lanzar la busqueda
-                _fcvStarSearch();
+              //Lanzar la busqueda
+              _fcvStarSearch();
             }
           ),
         ),
       ],
-    ),
+    )),
   );
 }
 
