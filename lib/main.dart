@@ -16,7 +16,6 @@ class MyApp extends StatelessWidget
   @override
   Widget build(BuildContext context) {
 
-    /*
     return BlocProvider<UrlPreViewBloc>(
       create: (context) => UrlPreViewBloc(),
       child: MaterialApp(
@@ -26,8 +25,7 @@ class MyApp extends StatelessWidget
           home: const MyHomePage(title: 'Vista Previa Url'),
       ),
     );
-    */
-
+    /*
     return MaterialApp(
       title: 'Vista url',
       theme: ThemeData(
@@ -35,6 +33,7 @@ class MyApp extends StatelessWidget
       ),
       home: const MyHomePage(title: 'Vista Previa Url'),
     );
+    */
   }
 }
 
@@ -156,7 +155,7 @@ class _MyHomePageState extends State<MyHomePage>
                 ),
               ),
               // Imagen
-              Image(image: NetworkImage(tobReg.link!)),
+              Image(image: NetworkImage(tobReg.image!.url)),
               // Descripción
               Container(
                 padding: const EdgeInsets.all(10),

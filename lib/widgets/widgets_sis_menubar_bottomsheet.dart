@@ -49,9 +49,12 @@ void fcvMenuBottomSheetViewList(UrlPreViewBloc bloc,
 /// guardar los cambios realizados
 Widget _fobBuildButtonSaveLink(Function(PreviewData) fcOnSelectItem)
 {
-  return _fobViewButtonAction("Guardar",
-  (){
-    fcOnSelectItem(_setPreviewRegister());
+  return _fobViewButtonAction("Guardar", (){
+    if (lobRegister != null)
+    {
+      fcOnSelectItem(lobRegister!);
+    }
+    //fcOnSelectItem(_setPreviewRegister());
   });
 }
 
@@ -81,10 +84,6 @@ Widget _fobViewButtonAction(String tcrLabel,  VoidCallback tobButtonPressed)
 
 PreviewData _setPreviewRegister()
 {
-  if (lobRegister != null)
-  {
-    return lobRegister!;
-  }
   return  PreviewData(
     title:'Así es el Xperia Pro - 1',
     description: 'Así es el Xperia Pro - 1, el primer móvil de Sony con sensor de una pulgada (y Snapdragon 888,  pantalla OLED 4K a 120Hz y 512 GB de memoria interna...) #sonyxperiapro1',
@@ -145,19 +144,23 @@ Widget _fobViewAppBarSearch(UrlPreViewBloc bloc, BuildContext context)
         Container(
           margin: const EdgeInsets.only(left: 5, top: 3),
           child: const Icon(Icons.link, 
-          color: Colors.grey,
-          size: 40,),
+            color: Colors.grey,
+            size: 40,
+          ),
         ),
         StreamBuilder<String>(
           stream: bloc.g1Url,
           builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
             return  Container(
-              //color: Colors.amber,
-              width: _width*0.70,
+              color: Colors.amber,
+              width: _width*0.65,
               height: 45,
               padding: const EdgeInsets.only(left: 5, top: 14),
               margin: const EdgeInsets.only(left: 50, top: 5, bottom: 5),
               child: TextField(
+                style: const TextStyle(
+                    fontSize: 12
+                ),
                 decoration: const InputDecoration(
                   hintText: 'Pega el link aqui...' ,
                   border: InputBorder.none,
@@ -165,36 +168,29 @@ Widget _fobViewAppBarSearch(UrlPreViewBloc bloc, BuildContext context)
                 controller: _lobController,
                 focusNode: _lobFocusNode,
                 onChanged: bloc.onG1UrlChanged,
+                keyboardType: TextInputType.multiline,
+                maxLines: null,                       
               )
             );
           }
         ),
         // Boton limpiar texto
-        StreamBuilder<bool>(
-          stream: bloc.onActivateAccion,
-          builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-
-            return snapshot.hasData == true && snapshot.data == true ?
-              Container(
-                height: 45,
-                margin: const EdgeInsets.only(top: 5, bottom: 7, right: 30),
-                alignment: Alignment.centerRight,
-                child: FloatingActionButton(
-                  heroTag: UniqueKey(),
-                  child: const Icon(Icons.close),
-                  elevation: 5,
-                  backgroundColor: Colors.redAccent,
-                  onPressed: () {
-                    _lobController.clear();
-                    //_fcvStarSearch();
-                  } 
-                ),
-              ) :
-              Container();
-            //return _fobBuildViewButton(snapshot);
-          }
+        Container(
+          height: 45,
+          margin: const EdgeInsets.only(top: 5, bottom: 7, right: 50),
+          alignment: Alignment.centerRight,
+          child: FloatingActionButton(
+            heroTag: UniqueKey(),
+            child: const Icon(Icons.close, color: Colors.red),
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            onPressed: () {
+              _lobController.clear();
+              //_fcvStarSearch();
+            } 
+          ),
         ),
-              // Ejecutar busqueda
+        // Ejecutar busqueda
         Container(
           height: 45,
           //color: Colors.cyan,
@@ -219,8 +215,11 @@ Widget _fobViewAppBarSearch(UrlPreViewBloc bloc, BuildContext context)
 /// Realizar busqueda  de la url dentro del texto
 void _fcvStarSearch(String tcrText)
 {
-  lobRegister = null;
-  getPreviewData(tcrText).then((value) {
-    lobRegister = value;
-  });
+  if (tcrText.isNotEmpty)
+  {
+    lobRegister = null;
+    getPreviewData(tcrText).then((value) {
+      lobRegister = value;
+    });
+  }
 }
