@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../utility/functions.dart';
-import '../blocs/bloc_persistent.dart';
+import '../blocs/bloc_base.dart';
 import '../models/model_object_preview.dart';
 
 /// datos del Registro cargado 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'blocs/bloc_persistent.dart';
+import 'blocs/bloc_base.dart';
 import 'models/model_object_preview.dart';
 import 'widgets/widgets_sis_menubar_bottomsheet.dart';
 

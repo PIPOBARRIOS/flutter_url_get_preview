@@ -1,18 +1,24 @@
 import 'dart:async';
-import 'dart:collection';
+//import 'dart:collection';
 import 'package:bloc/bloc.dart';
 //import 'package:flutter_bloc/flutter_bloc.dart';
 import '../models/model_object_preview.dart';
 import 'package:rxdart/rxdart.dart';
 
+import 'bloc_event.dart';
+import 'bloc_state.dart';
+
 
 ///  Persistencia de datos
-class UrlPreViewBloc implements BlocBase
+class UrlPreViewBloc extends Bloc<BlocEvent, BlocState>
 {
+
+  UrlPreViewBloc() : super(StateIsInitializing(),);
+
   /// Registro dado desde temporal que viene desde la base de datos
   PreviewData lobRecord = PreviewData();
 
-  List<PreviewData>  _tmpInListAux = <PreviewData>[];
+  final List<PreviewData>  _tmpInListAux = [];
   /// Controlador documentos cargados 
   final PublishSubject<List<PreviewData>> _tmpListController = PublishSubject<List<PreviewData>>();
   Sink<List<PreviewData>> get _tmpInList => _tmpListController.sink;
@@ -22,29 +28,16 @@ class UrlPreViewBloc implements BlocBase
   //------------------------------------------------
   // Declaración controladores
   //------------------------------------------------
-
   /// Para gestion de la url copiada
   BehaviorSubject<String> _g1urlController = BehaviorSubject<String>.seeded("");
-  /// Dirección residencia 
-  final BehaviorSubject<String> _g1addressController = BehaviorSubject<String>.seeded("");
-  /// Precio o valor economico 
-  final BehaviorSubject<String> _g1priceController = BehaviorSubject<String>.seeded("0");
-
-  //------------------------------------------------
   // Flujo de datos
-  //------------------------------------------------
   Stream<String> get g1Url => _g1urlController.stream;
-  //Stream<String> get g1address => _g1addressController.stream.transform(fcrValidaddress);
-  //Stream<String> get g1price => _g1priceController.stream.transform(fflValidprice);
+
   //------------------------------------------------
   // Funciones Validacion 
   //------------------------------------------------
   /// Url copiada
   Function(String) get onG1UrlChanged => _g1urlController.sink.add;
-  /// Dirección residencia
-  Function(String) get onG1addressChanged => _g1addressController.sink.add;
-  /// Precio o valor
-  Function(String) get onG1priceChanged => _g1priceController.sink.add;
 
   /*
   //------------------------------------------------
