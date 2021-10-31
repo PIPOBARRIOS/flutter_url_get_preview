@@ -173,20 +173,54 @@ Widget _fobViewAppBarSearch(BuildContext context)
           }
         ),
         // Boton limpiar texto
-        Container(
-          height: 45,
-          margin: const EdgeInsets.only(top: 5, bottom: 7, right: 50),
-          alignment: Alignment.centerRight,
-          child: FloatingActionButton(
-            heroTag: UniqueKey(),
-            child: const Icon(Icons.close, color: Colors.red),
-            elevation: 0,
-            backgroundColor: Colors.transparent,
-            onPressed: () {
-              _resetData();
-            } 
-          ),
+        StreamBuilder<String>(
+          stream: _bloc?.g1Url,
+          builder: (BuildContext context, AsyncSnapshot<String> snapshot) 
+          {
+            if (snapshot.data != null)
+            {
+              return snapshot.data!.isNotEmpty ?
+              Stack(
+                children: <Widget>[
+                  Container(
+                    height: 45,
+                    margin: const EdgeInsets.only(top: 5, bottom: 7, right: 50),
+                    alignment: Alignment.centerRight,
+                    child: FloatingActionButton(
+                      heroTag: UniqueKey(),
+                      child: const Icon(Icons.close, color: Colors.red),
+                      elevation: 0,
+                      backgroundColor: Colors.transparent,
+                      onPressed: () {
+                        _resetData();
+                      } 
+                    ),
+                  ),
+
+                  // Ejecutar busqueda
+                  Container(
+                    height: 45,
+                    //color: Colors.cyan,
+                    margin: const EdgeInsets.only(top: 5, bottom: 7),
+                    alignment: Alignment.centerRight,
+                    child: FloatingActionButton(
+                      heroTag: UniqueKey(),
+                      child: const Icon(Icons.search),
+                      elevation: 5,
+                      backgroundColor: Colors.teal[300],
+                      onPressed: () {
+                        //Lanzar la busqueda
+                        _fcvStarSearch(_lobController.text);
+                      }
+                    ),
+                  ),
+                ]
+              ): Container();
+            }
+            return Container();
+          }
         ),
+        /*
         // Ejecutar busqueda
         Container(
           height: 45,
@@ -204,6 +238,7 @@ Widget _fobViewAppBarSearch(BuildContext context)
             }
           ),
         ),
+        */
       ],
     )),
   );
