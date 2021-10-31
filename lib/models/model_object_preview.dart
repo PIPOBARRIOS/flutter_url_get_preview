@@ -38,12 +38,11 @@ class PreviewData extends Equatable {
 
   /// Crear una copia de los datos.
   /// Null values will nullify existing values.
-  PreviewData copyWith({
-    String? description,
-    PreviewDataImage? image,
-    String? link,
-    String? title,
-  }) {
+  PreviewData copyWith({String? description,
+                        PreviewDataImage? image,
+                        String? link,
+                        String? title}) 
+  {
     return PreviewData(
       description: description,
       image: image,

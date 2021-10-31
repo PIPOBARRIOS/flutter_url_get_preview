@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 import 'package:bloc/bloc.dart';
 //import 'package:flutter_bloc/flutter_bloc.dart';
 import '../models/model_object_preview.dart';
@@ -11,6 +12,7 @@ class UrlPreViewBloc implements BlocBase
   /// Registro dado desde temporal que viene desde la base de datos
   PreviewData lobRecord = PreviewData();
 
+  List<PreviewData>  _tmpInListAux = <PreviewData>[];
   /// Controlador documentos cargados 
   final PublishSubject<List<PreviewData>> _tmpListController = PublishSubject<List<PreviewData>>();
   Sink<List<PreviewData>> get _tmpInList => _tmpListController.sink;
@@ -22,7 +24,7 @@ class UrlPreViewBloc implements BlocBase
   //------------------------------------------------
 
   /// Para gestion de la url copiada
-  final BehaviorSubject<String> _g1urlController = BehaviorSubject<String>.seeded("");
+  BehaviorSubject<String> _g1urlController = BehaviorSubject<String>.seeded("");
   /// Dirección residencia 
   final BehaviorSubject<String> _g1addressController = BehaviorSubject<String>.seeded("");
   /// Precio o valor economico 
@@ -65,7 +67,7 @@ class UrlPreViewBloc implements BlocBase
     _g1urlController.stream.listen((onData) {
       _llgReturn  = BehaviorSubject<bool>.seeded(onData.isNotEmpty); 
     });
-
+    Future.delayed(const Duration(seconds: 1));
     return _llgReturn;
   }
 
@@ -75,7 +77,8 @@ class UrlPreViewBloc implements BlocBase
   /// Limpiar datos
   void fcvResetData()
   {
-    _g1urlController.sink.add('');
+     _g1urlController = BehaviorSubject<String>.seeded("");
+    //_g1urlController.sink.add('');
     _g1addressController.sink.add('');
     _g1priceController.sink.add('');
   }
@@ -104,7 +107,8 @@ class UrlPreViewBloc implements BlocBase
   /// Adicionar registro
   void fcvAddRegister(PreviewData tobRegister)
   {
-    _tmpInList.add([tobRegister]);
+    _tmpInListAux.add(tobRegister);
+    _tmpInList.add(_tmpInListAux);
   }
 
   // Cerrar controladores 

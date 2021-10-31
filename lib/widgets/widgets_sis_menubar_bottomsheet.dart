@@ -3,7 +3,14 @@ import '../utility/functions.dart';
 import '../blocs/bloc_persistent.dart';
 import '../models/model_object_preview.dart';
 
-PreviewData? lobRegister;
+/// datos del Registro cargado 
+PreviewData? _lobReg;
+
+/// Para persistencia de datos
+UrlPreViewBloc? _bloc;
+
+/// Capturar texto
+final _lobController = TextEditingController();
 
 //---------------------------------------------------------------------------
 // Vista tipo Lista
@@ -13,6 +20,7 @@ void fcvMenuBottomSheetViewList(UrlPreViewBloc bloc,
                                 BuildContext context, 
                                 Function(PreviewData) fcOnSelectItem)
 {
+  _bloc = bloc;
   var _height = MediaQuery.of(context).size.height;
   //var _width  = MediaQuery.of(context).size.width * 0.95;
  
@@ -33,7 +41,7 @@ void fcvMenuBottomSheetViewList(UrlPreViewBloc bloc,
           child: Stack(
             children: <Widget>[
                 // Campos para captura
-              _viewForm(bloc,context),
+              _viewForm(context),
               _fobBuildButtonSaveLink(fcOnSelectItem),
             ],
           ),
@@ -50,11 +58,11 @@ void fcvMenuBottomSheetViewList(UrlPreViewBloc bloc,
 Widget _fobBuildButtonSaveLink(Function(PreviewData) fcOnSelectItem)
 {
   return _fobViewButtonAction("Guardar", (){
-    if (lobRegister != null)
+    if (_lobReg != null)
     {
-      fcOnSelectItem(lobRegister!);
+      _resetData();
+      fcOnSelectItem(_lobReg!);
     }
-    //fcOnSelectItem(_setPreviewRegister());
   });
 }
 
@@ -82,28 +90,19 @@ Widget _fobViewButtonAction(String tcrLabel,  VoidCallback tobButtonPressed)
   );
 }
 
-PreviewData _setPreviewRegister()
-{
-  return  PreviewData(
-    title:'Así es el Xperia Pro - 1',
-    description: 'Así es el Xperia Pro - 1, el primer móvil de Sony con sensor de una pulgada (y Snapdragon 888,  pantalla OLED 4K a 120Hz y 512 GB de memoria interna...) #sonyxperiapro1',
-    link: 'https://external.fbaq6-1.fna.fbcdn.net/safe_image.php?d=AQE8Pewum_QMjfqW&w=400&h=400&url=https%3A%2F%2Fi.blogs.es%2F30c86b%2Fsony%2F840_560.jpeg&cfs=1&ext=emg0&_nc_oe=6eec5&_nc_sid=06c271&ccb=3-5&_nc_hash=AQFdwIDSb3toASkL',
-  );
-}
-
 //---------------------------------------------------------------------------
 // Vista capura de datos
 //---------------------------------------------------------------------------
 
 /// Vista formulario
-Widget _viewForm(UrlPreViewBloc bloc,BuildContext context)
+Widget _viewForm(BuildContext context)
 {
     var _height = MediaQuery.of(context).size.height;
 
     return ListView(
       children: <Widget>[
 
-        _fobViewAppBarSearch(bloc, context),
+        _fobViewAppBarSearch(context),
         Container(
           margin: const EdgeInsets.all(5),
           height: _height* 0.40,
@@ -118,16 +117,15 @@ Widget _viewForm(UrlPreViewBloc bloc,BuildContext context)
 }
 
 /// Boton para ejecutar la busqueda
-Widget _fobViewAppBarSearch(UrlPreViewBloc bloc, BuildContext context)
+Widget _fobViewAppBarSearch(BuildContext context)
 {
   double _width = MediaQuery.of(context).size.width;
 
-  final _lobController = TextEditingController();
   final _lobFocusNode = FocusNode();
 
   // cargar los datos desde Bloc
-  var data = bloc.fobGetRegisterDataGestion();
-  _lobController.text = data.link != null ? data.link!: '';
+  var data = _bloc?.fobGetRegisterDataGestion();
+  _lobController.text = data?.link != null ? data!.link!: '';
 
   return Align(
     alignment: Alignment.topCenter,
@@ -149,13 +147,13 @@ Widget _fobViewAppBarSearch(UrlPreViewBloc bloc, BuildContext context)
           ),
         ),
         StreamBuilder<String>(
-          stream: bloc.g1Url,
+          stream: _bloc?.g1Url,
           builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
             return  Container(
               color: Colors.amber,
               width: _width*0.65,
-              height: 45,
-              padding: const EdgeInsets.only(left: 5, top: 14),
+              //height: 45,
+              padding: const EdgeInsets.only(left: 2),
               margin: const EdgeInsets.only(left: 50, top: 5, bottom: 5),
               child: TextField(
                 style: const TextStyle(
@@ -167,7 +165,7 @@ Widget _fobViewAppBarSearch(UrlPreViewBloc bloc, BuildContext context)
                 ),
                 controller: _lobController,
                 focusNode: _lobFocusNode,
-                onChanged: bloc.onG1UrlChanged,
+                onChanged: _bloc?.onG1UrlChanged,
                 keyboardType: TextInputType.multiline,
                 maxLines: null,                       
               )
@@ -185,8 +183,7 @@ Widget _fobViewAppBarSearch(UrlPreViewBloc bloc, BuildContext context)
             elevation: 0,
             backgroundColor: Colors.transparent,
             onPressed: () {
-              _lobController.clear();
-              //_fcvStarSearch();
+              _resetData();
             } 
           ),
         ),
@@ -213,13 +210,26 @@ Widget _fobViewAppBarSearch(UrlPreViewBloc bloc, BuildContext context)
 }
 
 /// Realizar busqueda  de la url dentro del texto
-void _fcvStarSearch(String tcrText)
+void _fcvStarSearch(String tcrText) async
 {
+  print(' -----------busqueda-----------');
   if (tcrText.isNotEmpty)
   {
-    lobRegister = null;
-    getPreviewData(tcrText).then((value) {
-      lobRegister = value;
+    print('---------haciendo busqueda-------------');
+    _lobReg = null;
+    await getPreviewData(tcrText).then((value) {
+
+      print('--------- en proceso-------------');
+      _resetData();
+      _lobReg = value;
     });
   }
 }
+
+/// limpiar campo de captura y el Bloc
+void _resetData()
+{
+  _lobController.clear();
+  _bloc?.fcvResetData();
+}
+

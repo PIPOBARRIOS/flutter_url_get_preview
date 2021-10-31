@@ -51,15 +51,11 @@ class _MyHomePageState extends State<MyHomePage>
   double _width = 0;
   final UrlPreViewBloc _bloc = UrlPreViewBloc();  
 
-  /*
-  late final List<PreviewData> _tmpData=[
-    PreviewData(
-      title:'Así es el Xperia Pro - 1',
-      description: 'Así es el Xperia Pro - 1, el primer móvil de Sony con sensor de una pulgada (y Snapdragon 888,  pantalla OLED 4K a 120Hz y 512 GB de memoria interna...) #sonyxperiapro1',
-      link: 'https://external.fbaq6-1.fna.fbcdn.net/safe_image.php?d=AQE8Pewum_QMjfqW&w=400&h=400&url=https%3A%2F%2Fi.blogs.es%2F30c86b%2Fsony%2F840_560.jpeg&cfs=1&ext=emg0&_nc_oe=6eec5&_nc_sid=06c271&ccb=3-5&_nc_hash=AQFdwIDSb3toASkL',
-    )
-  ];
-  */
+  @override
+  void dispose() {
+    _bloc.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) 
@@ -82,29 +78,27 @@ class _MyHomePageState extends State<MyHomePage>
 
   void _addPreview()
   {
+    _bloc.fcvResetData();
     fcvMenuBottomSheetViewList(_bloc, context, (item){
       Navigator.pop(context);
+      /*
+      var ob = item.copyWith(description: item.description,
+                                      image: item.image,
+                                      link: item.link,
+                                      title: item.title);
+      */  
       _bloc.fcvAddRegister(item);
     });
-    /*
-    _homeBloc.fcvAddRegister(
-      PreviewData(
-        title:'Así es el Xperia Pro - 1',
-        description: 'Así es el Xperia Pro - 1, el primer móvil de Sony con sensor de una pulgada (y Snapdragon 888,  pantalla OLED 4K a 120Hz y 512 GB de memoria interna...) #sonyxperiapro1',
-        link: 'https://external.fbaq6-1.fna.fbcdn.net/safe_image.php?d=AQE8Pewum_QMjfqW&w=400&h=400&url=https%3A%2F%2Fi.blogs.es%2F30c86b%2Fsony%2F840_560.jpeg&cfs=1&ext=emg0&_nc_oe=6eec5&_nc_sid=06c271&ccb=3-5&_nc_hash=AQFdwIDSb3toASkL',
-      )
-    );
-    */
   }
 
   Widget _setListView()
   {
-    return StreamBuilder<List<PreviewData>>(
-      stream: _bloc.tmpStreamList,
-      builder: (BuildContext context, AsyncSnapshot<List<PreviewData>> snapshot) {
-        return ListView(
-          children: <Widget>[
-            ListView.builder(
+    return Stack(
+        children: <Widget>[
+          StreamBuilder<List<PreviewData>>(
+          stream: _bloc.tmpStreamList,
+          builder: (BuildContext context, AsyncSnapshot<List<PreviewData>> snapshot) {
+            return ListView.builder(
               shrinkWrap: true,
               scrollDirection: Axis.vertical,
               itemCount: _fnuItemCount(snapshot.data),
@@ -115,10 +109,9 @@ class _MyHomePageState extends State<MyHomePage>
                 }
                 return Container(height: _height*0.80,);
               }
-            ),
-          ]  
-        );  
-      }
+            );
+          }),  
+        ],
     );
   }
 
