@@ -9,19 +9,52 @@ import 'bloc_state.dart';
 
 
 ///  Persistencia de datos
-class UrlPreViewBloc extends Bloc<BlocEvent, BlocState>
+class BlocPreview extends Bloc<BlocEvent, BlocState>
 {
 
-  UrlPreViewBloc() : super(StateIsInitializing(),);
+  BlocPreview() : super(StateIsInitializing(),);
+
+
+  /// Para gestion de la url copiada
+  BehaviorSubject<String> _g1urlController = BehaviorSubject<String>.seeded("");
+  /// captura del texto 
+  Stream<String> get g1Url => _g1urlController.stream;
+  /// Url copiada
+  Function(String) get onG1UrlChanged => _g1urlController.sink.add;
+
+
+  /// activacion los botones de accion
+  Stream<bool> get onActivateAccion => streamActiveButtomClear();
+  Stream<bool> streamActiveButtomClear()
+  {
+     Stream<bool> _llgReturn = BehaviorSubject<bool>.seeded(false);
+
+    _g1urlController.stream.listen((onData) {
+      _llgReturn  = BehaviorSubject<bool>.seeded(onData.isNotEmpty); 
+    });
+    Future.delayed(const Duration(seconds: 1));
+    return _llgReturn;
+  }
+
+  /// Limpiar datos
+  void fcvResetData()
+  {
+     _g1urlController = BehaviorSubject<String>.seeded("");
+  }
+
+  // Cerrar controladores 
+  void dispose() {
+    _g1urlController.close();
+  }
 
   /// Registro temporal para cargar datos de la Url
   PreviewData data = PreviewData();
-
+  /// Temporal auxiliar
   final List<PreviewData>  _tmpInListAux = [];
-  /// Controlador documentos cargados 
+
+  /// Controlador para lista de registros cargados en vista
   final PublishSubject<List<PreviewData>> _tmpListController = PublishSubject<List<PreviewData>>();
   Sink<List<PreviewData>> get _tmpInList => _tmpListController.sink;
-  /// Lista general registro cargados
   Stream<List<PreviewData>> get tmpStreamList => _tmpListController.stream;
 
   /// fcvAddRegister: Adicionar registro al hacer click
@@ -93,76 +126,4 @@ class UrlPreViewBloc extends Bloc<BlocEvent, BlocState>
       yield StateIsFailure(msjError: e.message);
     }
   }
-
-
-  /*
-  //---------------------------------------------------------------------
-  // Procesos gestion firmar acuerdo y demas pasos
-  //---------------------------------------------------------------------
-
-  /// Cargando datos para la vista
-  Stream<StandardEditionState> _fcvUpdateDataUpdate(SaleOfferEventUpdate event)  async*
-  {
-    try
-    {
-      bool llgResponse = false;
-      await apiPublishOffer.flgApiEditSaleOffer(event.tmpData).then((tcrValue) {
-        if (tcrValue != null)
-        {
-          llgResponse = true;
-        }
-      });
-
-      if (llgResponse == true)
-      {
-          // Mostrar la vista de datos
-          yield StandardEditionStateIsCapture();
-      }
-      else
-      {
-        // Ocurrio algin error
-        yield StandardEditionStateIsFailure(msjError: "Ocurrió algún error");
-      }
-    }
-    on ManagementError catch (e)
-    {
-      yield StandardEditionStateIsFailure(msjError: e.message);
-    }
-  }
-
-  //---------------------------------------------------------------------
-  // Procesos para gestion 
-  //---------------------------------------------------------------------
-
-  Stream<StandardEditionState> _fcvMapSavingDataBase(SaleOfferEventSave event) async*
-  {
-    try
-    {
-      bool llgResponse = false;
-
-      await apiPublishOffer.flgApiEditSaleOffer(event.tmpData).then((tcrValue) {
-        if (tcrValue != null)
-        {
-          llgResponse = true;
-        }
-      });
-
-      if (llgResponse == true)
-      {
-          // Mostrar la vista, finalizado con Exito
-          yield StandardEditionStateIsSuccessFull();
-      }
-      else
-      {
-        // Ocurrio algin error
-        yield StandardEditionStateIsFailure(msjError: "Ocurrió algún error");
-      }
-
-    }
-    on ManagementError catch (e)
-    {
-      yield StandardEditionStateIsFailure(msjError: e.message);
-    }
-  }
-  */
 }

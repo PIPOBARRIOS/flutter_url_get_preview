@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'blocs/bloc_base.dart';
-import 'blocs/bloc_behavior.dart';
 import 'models/model_object_preview.dart';
 import 'widgets/widgets_sis_menubar_bottomsheet.dart';
 
@@ -17,8 +16,8 @@ class MyApp extends StatelessWidget
   @override
   Widget build(BuildContext context) {
 
-    return BlocProvider<UrlPreViewBloc>(
-      create: (context) => UrlPreViewBloc(),
+    return BlocProvider<BlocPreview>(
+      create: (context) => BlocPreview(),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Aplicación Vista Url',
@@ -49,20 +48,18 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> 
 {
   double _height = 0;
-  double _width = 0;
-  late UrlPreViewBloc _bloc;
-  BehaviorBloc _behvBloc = BehaviorBloc();
-
+  //double _width = 0;
+  late BlocPreview _bloc;
 
   @override
   void initState() {
     super.initState();
-    _bloc = BlocProvider.of<UrlPreViewBloc>(context);
+    _bloc = BlocProvider.of<BlocPreview>(context);
   }
 
   @override
   void dispose() {
-    _behvBloc.dispose();
+    _bloc.dispose();
     super.dispose();
   }
 
@@ -70,7 +67,7 @@ class _MyHomePageState extends State<MyHomePage>
   Widget build(BuildContext context) 
   {
     _height = MediaQuery.of(context).size.height;
-    _width  = MediaQuery.of(context).size.width;
+    //_width  = MediaQuery.of(context).size.width;
 
     return Scaffold(
       appBar: AppBar(
@@ -87,8 +84,8 @@ class _MyHomePageState extends State<MyHomePage>
 
   void _addPreview()
   {
-    _behvBloc.fcvResetData();
-    fcvMenuBottomSheetViewList(_bloc, context, (item){
+    _bloc.fcvResetData();
+    fcvMenuBottomSheetViewList(_bloc, context, (){
 
       Navigator.pop(context);
       _bloc.fcvAddRegister();
@@ -129,7 +126,7 @@ class _MyHomePageState extends State<MyHomePage>
   /// Mostrar la vista previa
   Widget _fobBuildPreview(BuildContext context, int tnuIndex, PreviewData tobReg) 
   {
-    var _width = MediaQuery.of(context).size.width;
+    double _width = MediaQuery.of(context).size.width;
 
     return SizedBox(
       width: _width*0.95,
@@ -147,9 +144,9 @@ class _MyHomePageState extends State<MyHomePage>
                 alignment: Alignment.centerLeft,
                 padding: const EdgeInsets.all(10),
                 child: Text(tobReg.title!, 
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.blue,
-                    fontSize: 18)
+                    fontSize: _width*0.040)
                 ),
               ),
               // Imagen

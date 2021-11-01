@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../utility/functions.dart';
+import 'package:flutter_url_get_preview/blocs/bloc_event.dart';
 import '../blocs/bloc_base.dart';
 import '../models/model_object_preview.dart';
 
@@ -8,7 +8,7 @@ import '../models/model_object_preview.dart';
 PreviewData? _lobReg;
 
 /// Para persistencia de datos
-UrlPreViewBloc? _bloc;
+late BlocPreview _bloc;
 
 /// Capturar texto
 final _lobController = TextEditingController();
@@ -17,12 +17,12 @@ final _lobController = TextEditingController();
 // Vista tipo Lista
 //---------------------------------------------------------------------------
 /// Menu tipo Hoja inferior
-void fcvMenuBottomSheetViewList(UrlPreViewBloc bloc, 
+void fcvMenuBottomSheetViewList(BlocBase bloc, 
                                 BuildContext context, 
-                                Function(PreviewData) fcOnSelectItem)
+                                Function fcOnSelectItem)
 {
   //_bloc = bloc;
-  _bloc = BlocProvider.of<UrlPreViewBloc>(context);
+  _bloc = BlocProvider.of<BlocPreview>(context);
 
   var _height = MediaQuery.of(context).size.height;
   //var _width  = MediaQuery.of(context).size.width * 0.95;
@@ -58,18 +58,18 @@ void fcvMenuBottomSheetViewList(UrlPreViewBloc bloc,
 // Boton guardar
 //---------------------------------------------------------------------------
 /// guardar los cambios realizados
-Widget _fobBuildButtonSaveLink(Function(PreviewData) fcOnSelectItem)
+Widget _fobBuildButtonSaveLink(Function fcOnSelectItem)
 {
   return _fobViewButtonAction("Guardar", (){
     if (_lobReg != null)
     {
-      _resetData();
       fcOnSelectItem(_lobReg!);
+      _resetData();
     }
   });
 }
 
-/// Mostrar Boton debajo del mensaje
+/// Boton Accion 
 Widget _fobViewButtonAction(String tcrLabel,  VoidCallback tobButtonPressed)
 {
   return Align(
@@ -120,6 +120,39 @@ Widget _viewForm(BuildContext context)
     );
 }
 
+// vista gestion bloc
+Widget _PreViewbuild(BuildContext context)
+{
+    _height = MediaQuery.of(context).size.height;
+    _width  = MediaQuery.of(context).size.width;
+
+    _lduFontMsjSize = MediaQuery.of(context).size.height * 0.020;
+    return Scaffold(
+    body: BlocBuilder<SaleOfferBloc,StandardEditionState>(
+      bloc: _lobBloc,
+      builder: (BuildContext context, StandardEditionState state)
+      {
+        if (state is StandardEditionStateIsSaving)
+        {
+          return _fcvBuildSaving();
+        } 
+        else if (state is StandardEditionStateIsSuccessFull)
+        {
+          return _fcvBuildSuccessFull();
+        }
+        else if (state is StandardEditionStateIsFailure)
+        {
+          return _fcvBuildFailure();
+        }
+        else if (state is StandardEditionStateIsInitializing || state is StandardEditionStateIsCapture)
+        {
+          return _fobBuildForm();
+        }
+        return Container();
+      }),
+    );
+}
+
 /// Boton para ejecutar la busqueda
 Widget _fobViewAppBarSearch(BuildContext context)
 {
@@ -128,8 +161,8 @@ Widget _fobViewAppBarSearch(BuildContext context)
   final _lobFocusNode = FocusNode();
 
   // cargar los datos desde Bloc
-  var data = _bloc?.fobGetRegisterDataGestion();
-  _lobController.text = data?.link != null ? data!.link!: '';
+  //var data = _bloc?.fobGetRegisterDataGestion();
+  //_lobController.text = data?.link != null ? data!.link!: '';
 
   return Align(
     alignment: Alignment.topCenter,
@@ -151,7 +184,7 @@ Widget _fobViewAppBarSearch(BuildContext context)
           ),
         ),
         StreamBuilder<String>(
-          stream: _bloc?.g1Url,
+          stream: _bloc.g1Url,
           builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
             return  Container(
               color: Colors.amber,
@@ -168,7 +201,7 @@ Widget _fobViewAppBarSearch(BuildContext context)
                 ),
                 controller: _lobController,
                 focusNode: _lobFocusNode,
-                onChanged: _bloc?.onG1UrlChanged,
+                onChanged: _bloc.onG1UrlChanged,
                 keyboardType: TextInputType.multiline,
                 maxLines: null,                       
               )
@@ -177,7 +210,7 @@ Widget _fobViewAppBarSearch(BuildContext context)
         ),
         // Boton limpiar texto
         StreamBuilder<String>(
-          stream: _bloc?.g1Url,
+          stream: _bloc.g1Url,
           builder: (BuildContext context, AsyncSnapshot<String> snapshot) 
           {
             if (snapshot.data != null)
@@ -223,51 +256,26 @@ Widget _fobViewAppBarSearch(BuildContext context)
             return Container();
           }
         ),
-        /*
-        // Ejecutar busqueda
-        Container(
-          height: 45,
-          //color: Colors.cyan,
-          margin: const EdgeInsets.only(top: 5, bottom: 7),
-          alignment: Alignment.centerRight,
-          child: FloatingActionButton(
-            heroTag: UniqueKey(),
-            child: const Icon(Icons.search),
-            elevation: 5,
-            backgroundColor: Colors.teal[300],
-            onPressed: () {
-              //Lanzar la busqueda
-              _fcvStarSearch(_lobController.text);
-            }
-          ),
-        ),
-        */
       ],
     )),
   );
 }
 
 /// Realizar busqueda  de la url dentro del texto
+/// y cargar datos
 void _fcvStarSearch(String tcrText) async
 {
-  print(' -----------busqueda-----------');
   if (tcrText.isNotEmpty)
   {
-    print('---------haciendo busqueda-------------');
-    _lobReg = null;
-    await getPreviewData(tcrText).then((value) {
-
-      print('--------- en proceso-------------');
-      _resetData();
-      _lobReg = value;
-    });
+     _bloc.add(EventLoad(message: tcrText));
   }
 }
 
 /// limpiar campo de captura y el Bloc
 void _resetData()
 {
+  _bloc.add(EventCapture());
   _lobController.clear();
-  _bloc?.fcvResetData();
+  _bloc.fcvResetData();
 }
 

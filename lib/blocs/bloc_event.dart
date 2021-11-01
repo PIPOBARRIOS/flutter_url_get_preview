@@ -31,14 +31,10 @@ class EventSave extends Event {
 
 }
 
-/// Descencadenar el evento cargar una url en la vista
+/// Descencadenar el evento cargar datos de una url en la vista
 class EventLoad extends Event {
 
-  /// Temporal registro que recoge los datos par la vista de la url
-  final PreviewData tmpData;
-
-  EventLoad({String message ='', required this.tmpData}) :
-             super(message: message); // se inicia las variables vacias
+  EventLoad({String message =''}) : super(message: message); // se inicia las variables vacias
 
 }
 
