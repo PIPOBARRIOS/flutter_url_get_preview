@@ -1,10 +1,9 @@
 import 'dart:async';
-//import 'dart:collection';
-import 'package:bloc/bloc.dart';
-//import 'package:flutter_bloc/flutter_bloc.dart';
-import '../models/model_object_preview.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:bloc/bloc.dart';
 
+import '../utility/functions.dart';
+import '../models/model_object_preview.dart';
 import 'bloc_event.dart';
 import 'bloc_state.dart';
 
@@ -15,8 +14,8 @@ class UrlPreViewBloc extends Bloc<BlocEvent, BlocState>
 
   UrlPreViewBloc() : super(StateIsInitializing(),);
 
-  /// Registro dado desde temporal que viene desde la base de datos
-  PreviewData lobRecord = PreviewData();
+  /// Registro temporal para cargar datos de la Url
+  PreviewData data = PreviewData();
 
   final List<PreviewData>  _tmpInListAux = [];
   /// Controlador documentos cargados 
@@ -25,94 +24,145 @@ class UrlPreViewBloc extends Bloc<BlocEvent, BlocState>
   /// Lista general registro cargados
   Stream<List<PreviewData>> get tmpStreamList => _tmpListController.stream;
 
-  //------------------------------------------------
-  // Declaración controladores
-  //------------------------------------------------
-  /// Para gestion de la url copiada
-  BehaviorSubject<String> _g1urlController = BehaviorSubject<String>.seeded("");
-  // Flujo de datos
-  Stream<String> get g1Url => _g1urlController.stream;
-
-  //------------------------------------------------
-  // Funciones Validacion 
-  //------------------------------------------------
-  /// Url copiada
-  Function(String) get onG1UrlChanged => _g1urlController.sink.add;
-
-  /*
-  //------------------------------------------------
-  // activacion botones
-  //------------------------------------------------
-  /// activacion del boton Guardar 
-  Stream<bool> get onActivateCREATE => Rx.combineLatest3(
-                                      g1note, 
-                                      g1address,
-                                      g1price,
-                                      (a, b, c) => true);
-  */
-
-  /// activacion los botones de accion
-  Stream<bool> get onActivateAccion => streamActiveButtomClear();
-  Stream<bool> streamActiveButtomClear()
+  /// fcvAddRegister: Adicionar registro al hacer click
+  /// en el boton guardar
+  void fcvAddRegister()
   {
-     Stream<bool> _llgReturn = BehaviorSubject<bool>.seeded(false);
-
-    _g1urlController.stream.listen((onData) {
-      _llgReturn  = BehaviorSubject<bool>.seeded(onData.isNotEmpty); 
-    });
-    Future.delayed(const Duration(seconds: 1));
-    return _llgReturn;
-  }
-
-  //------------------------------------------------
-  // Funciones Limpiar datos
-  //------------------------------------------------
-  /// Limpiar datos
-  void fcvResetData()
-  {
-     _g1urlController = BehaviorSubject<String>.seeded("");
-    //_g1urlController.sink.add('');
-    _g1addressController.sink.add('');
-    _g1priceController.sink.add('');
-  }
-  
-  //------------------------------------------------
-  // Funciones para Cargar en temporal
-  //------------------------------------------------
-  ///Cargar los datos en el registro temporal maestro
-  PreviewData fobGetRegisterDataGestion()
-  {
-
-    _g1urlController.stream.listen((onData) {
-     lobRecord.link = onData;
-    });
-
-    _g1addressController.stream.listen((onData) {
-     lobRecord.description = onData;
-    });
-
-
-    return lobRecord;
-  }
-  //------------------------------------------------
-  // fcvAddRegister: Adicionar registro
-  //------------------------------------------------
-  /// Adicionar registro
-  void fcvAddRegister(PreviewData tobRegister)
-  {
-    _tmpInListAux.add(tobRegister);
+    /*
+    var ob = data.copyWith(description: data.description,
+                           image: data.image,
+                           link: data.link,
+                           title: data.title);
+    */  
+    _tmpInListAux.add(data);
     _tmpInList.add(_tmpInListAux);
   }
 
-  // Cerrar controladores 
-  void dispose() {
-    _tmpListController.close();
-    _g1urlController.close();
-    _g1addressController.close();
-    _g1priceController.close();
- }
-
-  // Se invoca cuando se accede a un método o propiedad inexistente - para cumplir con la implements BlocBase
+  // Proceso de gestion
   @override
-  noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+  Stream<BlocState> mapEventToState(BlocEvent event) async* 
+  {
+    if (event is EventCapture)
+    {
+      yield StateIsCapture();
+    }
+
+    if (event is EventLoad)
+    {
+      yield StateIsLoading();
+      yield *_fcvLoadData(event);
+    }
+
+    if (event is EventError)
+    {
+      // cuando ocurre un error
+      yield StateIsFailure(msjError:'ocurrió algún error.');
+    }
+  }
+  /// Crgando datos para la vista
+  Stream<BlocState> _fcvLoadData(EventLoad event) async*
+  {
+    try 
+    {
+      data = PreviewData();
+      bool llgResponse = false;
+
+      // Cargar los datos desde la base de datos
+      await getPreviewData(event.message).then((tcrValue) {
+        if (tcrValue.title!.isNotEmpty) // se ejecuto sin error
+        {   
+          data = tcrValue; 
+          llgResponse = true;
+        }
+      });
+
+      if (llgResponse == true)
+      {
+          // Mostrar la vista de la pagina (preview Url)
+          yield StateIsSuccessFull();
+      }
+      else
+      {
+        // Ocurrio un error al cargar la url (no se encontro los objetos en el dom)
+        yield StateIsFailure(msjError: "No fué posible cargar la vista.");
+      }
+
+    }
+    on ManagementError catch (e) 
+    {
+      yield StateIsFailure(msjError: e.message);
+    }
+  }
+
+
+  /*
+  //---------------------------------------------------------------------
+  // Procesos gestion firmar acuerdo y demas pasos
+  //---------------------------------------------------------------------
+
+  /// Cargando datos para la vista
+  Stream<StandardEditionState> _fcvUpdateDataUpdate(SaleOfferEventUpdate event)  async*
+  {
+    try
+    {
+      bool llgResponse = false;
+      await apiPublishOffer.flgApiEditSaleOffer(event.tmpData).then((tcrValue) {
+        if (tcrValue != null)
+        {
+          llgResponse = true;
+        }
+      });
+
+      if (llgResponse == true)
+      {
+          // Mostrar la vista de datos
+          yield StandardEditionStateIsCapture();
+      }
+      else
+      {
+        // Ocurrio algin error
+        yield StandardEditionStateIsFailure(msjError: "Ocurrió algún error");
+      }
+    }
+    on ManagementError catch (e)
+    {
+      yield StandardEditionStateIsFailure(msjError: e.message);
+    }
+  }
+
+  //---------------------------------------------------------------------
+  // Procesos para gestion 
+  //---------------------------------------------------------------------
+
+  Stream<StandardEditionState> _fcvMapSavingDataBase(SaleOfferEventSave event) async*
+  {
+    try
+    {
+      bool llgResponse = false;
+
+      await apiPublishOffer.flgApiEditSaleOffer(event.tmpData).then((tcrValue) {
+        if (tcrValue != null)
+        {
+          llgResponse = true;
+        }
+      });
+
+      if (llgResponse == true)
+      {
+          // Mostrar la vista, finalizado con Exito
+          yield StandardEditionStateIsSuccessFull();
+      }
+      else
+      {
+        // Ocurrio algin error
+        yield StandardEditionStateIsFailure(msjError: "Ocurrió algún error");
+      }
+
+    }
+    on ManagementError catch (e)
+    {
+      yield StandardEditionStateIsFailure(msjError: e.message);
+    }
+  }
+  */
 }

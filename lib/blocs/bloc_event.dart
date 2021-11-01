@@ -31,16 +31,23 @@ class EventSave extends Event {
 
 }
 
-/// Descencadenar el evento actualizar datos en proceso de un contrato
-class EventUpdate extends Event {
+/// Descencadenar el evento cargar una url en la vista
+class EventLoad extends Event {
 
-  /// Temporal registros que recoge todos los datos capturados
+  /// Temporal registro que recoge los datos par la vista de la url
   final PreviewData tmpData;
 
-  EventUpdate({String message ='', required this.tmpData}) :
+  EventLoad({String message ='', required this.tmpData}) :
              super(message: message); // se inicia las variables vacias
 
 }
 
 /// Cuando ocurre un erro en la autenticación
 class EventError extends Event {} // activa el evento error
+
+/// Control para errores
+class  ManagementError implements Exception 
+{
+  final String message;
+  ManagementError(this.message);
+}

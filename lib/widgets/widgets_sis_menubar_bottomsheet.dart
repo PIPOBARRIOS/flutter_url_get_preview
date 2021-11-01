@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../utility/functions.dart';
 import '../blocs/bloc_base.dart';
 import '../models/model_object_preview.dart';
@@ -20,7 +21,9 @@ void fcvMenuBottomSheetViewList(UrlPreViewBloc bloc,
                                 BuildContext context, 
                                 Function(PreviewData) fcOnSelectItem)
 {
-  _bloc = bloc;
+  //_bloc = bloc;
+  _bloc = BlocProvider.of<UrlPreViewBloc>(context);
+
   var _height = MediaQuery.of(context).size.height;
   //var _width  = MediaQuery.of(context).size.width * 0.95;
  

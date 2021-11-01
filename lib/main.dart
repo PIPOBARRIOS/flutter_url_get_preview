@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'blocs/bloc_base.dart';
+import 'blocs/bloc_behavior.dart';
 import 'models/model_object_preview.dart';
 import 'widgets/widgets_sis_menubar_bottomsheet.dart';
 
@@ -49,11 +50,19 @@ class _MyHomePageState extends State<MyHomePage>
 {
   double _height = 0;
   double _width = 0;
-  final UrlPreViewBloc _bloc = UrlPreViewBloc();  
+  late UrlPreViewBloc _bloc;
+  BehaviorBloc _behvBloc = BehaviorBloc();
+
+
+  @override
+  void initState() {
+    super.initState();
+    _bloc = BlocProvider.of<UrlPreViewBloc>(context);
+  }
 
   @override
   void dispose() {
-    _bloc.dispose();
+    _behvBloc.dispose();
     super.dispose();
   }
 
@@ -78,16 +87,12 @@ class _MyHomePageState extends State<MyHomePage>
 
   void _addPreview()
   {
-    _bloc.fcvResetData();
+    _behvBloc.fcvResetData();
     fcvMenuBottomSheetViewList(_bloc, context, (item){
+
       Navigator.pop(context);
-      /*
-      var ob = item.copyWith(description: item.description,
-                                      image: item.image,
-                                      link: item.link,
-                                      title: item.title);
-      */  
-      _bloc.fcvAddRegister(item);
+      _bloc.fcvAddRegister();
+
     });
   }
 
@@ -165,38 +170,4 @@ class _MyHomePageState extends State<MyHomePage>
       )
     );
   }
-
-  /// Boton agregar nuevo registro
-  Widget _addNewPreView(BuildContext context)
-  {
-    return Align(
-        alignment: Alignment.bottomRight,
-        child: Container(
-          margin: EdgeInsets.only(bottom: _height *0.0680),
-          alignment: Alignment.center,
-          height: _height * 0.10,
-          width: _width * 0.24,
-          child: _addNewPreViewButton(context),
-        ),
-    );
-  }
-
-  Widget _addNewPreViewButton(BuildContext context)
-  {
-    return FloatingActionButton(
-      heroTag: UniqueKey(),
-      child: const Icon(Icons.add, color:Colors.white),
-      elevation: 5,
-      backgroundColor: Colors.blue,
-      onPressed: (){
-
-        fcvMenuBottomSheetViewList(_bloc,context, (item){
-          Navigator.pop(context);
-          _bloc.fcvAddRegister(item);
-        });
-        
-      },
-    );
-  }
-
 }
