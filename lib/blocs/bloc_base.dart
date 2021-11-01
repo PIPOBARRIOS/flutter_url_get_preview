@@ -43,18 +43,27 @@ class BlocPreview extends Bloc<BlocEvent, BlocState>
   void fcvResetData()
   {
      _g1urlController = BehaviorSubject<String>.seeded("");
+     _tmpInregData.add(PreviewData());
   }
 
   // Cerrar controladores 
   void dispose() {
     _g1urlController.close();
+    _g1regDataController.close();
+    _tmpListController.close();
   }
 
   //---------------------------------------------------------------------------
   // gestion temporales y cargar desde la Web
   //---------------------------------------------------------------------------
   /// Registro temporal para cargar datos de la Url
-  PreviewData data = PreviewData();
+  PreviewData regData = PreviewData();
+
+  /// Straming para activar el boton guardar
+  final BehaviorSubject<PreviewData> _g1regDataController = BehaviorSubject<PreviewData>();
+  Sink<PreviewData> get _tmpInregData => _g1regDataController.sink;
+  Stream<PreviewData> get g1regData => _g1regDataController.stream;
+
   /// Temporal auxiliar
   final List<PreviewData>  _tmpInListAux = [];
 
@@ -73,7 +82,7 @@ class BlocPreview extends Bloc<BlocEvent, BlocState>
                            link: data.link,
                            title: data.title);
     */  
-    _tmpInListAux.add(data);
+    _tmpInListAux.add(regData);
     _tmpInList.add(_tmpInListAux);
   }
 
@@ -103,14 +112,15 @@ class BlocPreview extends Bloc<BlocEvent, BlocState>
   {
     try 
     {
-      data = PreviewData();
+      regData = PreviewData();
       bool llgResponse = false;
 
       // Cargar los datos desde la base de datos
       await getPreviewData(event.message).then((tcrValue) {
         if (tcrValue.title!.isNotEmpty) // se ejecuto sin error
         {   
-          data = tcrValue; 
+          regData = tcrValue;
+          _tmpInregData.add(tcrValue);
           llgResponse = true;
         }
       });

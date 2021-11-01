@@ -88,6 +88,7 @@ class _MyHomePageState extends State<MyHomePage>
     _bloc.fcvResetData();
     fcvMenuBottomSheetViewList(_bloc, context, (){
 
+      print("SELECT");
       Navigator.pop(context);
       _bloc.fcvAddRegister();
 
