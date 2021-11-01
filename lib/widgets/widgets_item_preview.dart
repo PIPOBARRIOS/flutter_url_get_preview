@@ -1,4 +1,4 @@
-  import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import '../models/model_object_preview.dart';
 
 /// Mostrar la vista previa

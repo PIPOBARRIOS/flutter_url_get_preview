@@ -4,6 +4,7 @@ import 'package:flutter_url_get_preview/blocs/bloc_event.dart';
 import 'package:flutter_url_get_preview/blocs/bloc_state.dart';
 import '../blocs/bloc_base.dart';
 import '../models/model_object_preview.dart';
+import 'widgets_item_preview.dart';
 
 /// datos del Registro cargado 
 PreviewData? _lobReg;
@@ -103,7 +104,7 @@ Widget _PreViewbuild(BuildContext context)
         }
         else if (state is StateIsFailure)
         {
-          return _fcvBuildFailure();
+          return _fcvBuildFailure(context);
         }
         return Container();
       }),
@@ -141,9 +142,8 @@ Widget _fcvBuildIsLoading(BuildContext context)
   );
 }
 
-Widget _fcvBuildSuccessFull(BuildContext context)
+Widget _fcvBuildFailure(BuildContext context)
 {
-  _bloc.data
   var _height = MediaQuery.of(context).size.height;
   return Container(
     margin: const EdgeInsets.all(5),
@@ -152,10 +152,15 @@ Widget _fcvBuildSuccessFull(BuildContext context)
     decoration: const BoxDecoration(
       color: Colors.red,
       shape: BoxShape.rectangle,),
-    child: Icon(Icons.link, 
+    child: Icon(Icons.error, 
       color: Colors.grey,
       size: _height* 0.10),
   );
+}
+
+Widget _fcvBuildSuccessFull(BuildContext context)
+{
+  return fobBuildPreview(context, _bloc.data);
 }
 
 //---------------------------------------------------------------------------
