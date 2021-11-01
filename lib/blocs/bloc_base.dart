@@ -15,6 +15,9 @@ class BlocPreview extends Bloc<BlocEvent, BlocState>
   BlocPreview() : super(StateIsInitializing(),);
 
 
+  //---------------------------------------------------------------------------
+  // gestion objeto vista para escribir la url
+  //---------------------------------------------------------------------------
   /// Para gestion de la url copiada
   BehaviorSubject<String> _g1urlController = BehaviorSubject<String>.seeded("");
   /// captura del texto 
@@ -47,6 +50,9 @@ class BlocPreview extends Bloc<BlocEvent, BlocState>
     _g1urlController.close();
   }
 
+  //---------------------------------------------------------------------------
+  // gestion temporales y cargar desde la Web
+  //---------------------------------------------------------------------------
   /// Registro temporal para cargar datos de la Url
   PreviewData data = PreviewData();
   /// Temporal auxiliar

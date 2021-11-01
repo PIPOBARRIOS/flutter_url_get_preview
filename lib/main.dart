@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'blocs/bloc_base.dart';
 import 'models/model_object_preview.dart';
-import 'widgets/widgets_sis_menubar_bottomsheet.dart';
+import 'widgets/widgets_item_preview.dart';
+import 'widgets/widgets_bar_bottomsheet.dart';
 
 void main() {
   runApp(const MyApp());
@@ -107,7 +108,7 @@ class _MyHomePageState extends State<MyHomePage>
               itemBuilder: (BuildContext context, index) {
                 if (snapshot.data != null)
                 {
-                  return _fobBuildPreview(context, index, snapshot.data![index]);
+                  return fobBuildPreview(context, snapshot.data![index]);
                 }
                 return Container(height: _height*0.80,);
               }
@@ -121,50 +122,5 @@ class _MyHomePageState extends State<MyHomePage>
   {
     var _lnuReturn = tmp != null ? tmp.length:  1;
     return _lnuReturn;
-  }
-
-  /// Mostrar la vista previa
-  Widget _fobBuildPreview(BuildContext context, int tnuIndex, PreviewData tobReg) 
-  {
-    double _width = MediaQuery.of(context).size.width;
-
-    return SizedBox(
-      width: _width*0.95,
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-        margin: const EdgeInsets.all(15),
-        elevation: 10,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(30),
-          child: Column(
-            children: <Widget>[
-              const SizedBox(height: 30),
-              // Titulo
-              Container(
-                alignment: Alignment.centerLeft,
-                padding: const EdgeInsets.all(10),
-                child: Text(tobReg.title!, 
-                  style: TextStyle(
-                    color: Colors.blue,
-                    fontSize: _width*0.040)
-                ),
-              ),
-              // Imagen
-              Image(image: NetworkImage(tobReg.image!.url)),
-              // Descripción
-              Container(
-                padding: const EdgeInsets.all(10),
-                child: Text(tobReg.description!, 
-                  style: const TextStyle(
-                    fontSize: 14)
-                  ),
-                ),
-
-              const SizedBox(height: 30),
-            ],
-          ),
-        )
-      )
-    );
   }
 }

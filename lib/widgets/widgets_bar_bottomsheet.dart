@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_url_get_preview/blocs/bloc_event.dart';
+import 'package:flutter_url_get_preview/blocs/bloc_state.dart';
 import '../blocs/bloc_base.dart';
 import '../models/model_object_preview.dart';
 
@@ -55,6 +56,109 @@ void fcvMenuBottomSheetViewList(BlocBase bloc,
 }
 
 //---------------------------------------------------------------------------
+// Vista capura de datos
+//---------------------------------------------------------------------------
+
+/// Vista formulario
+Widget _viewForm(BuildContext context)
+{
+  var _height = MediaQuery.of(context).size.height;
+  return ListView(
+    children: <Widget>[
+
+      _fobViewAppBarSearch(context),
+      Container(
+        margin: const EdgeInsets.all(5),
+        height: _height* 0.40,
+        decoration: const BoxDecoration(
+          color: Colors.grey,
+          shape: BoxShape.rectangle,),
+          child: _PreViewbuild(context),
+      ),
+
+    ],
+  );
+}
+
+// vista gestion bloc
+Widget _PreViewbuild(BuildContext context)
+{
+  return Stack(
+    children: <Widget>[ 
+      BlocBuilder<BlocPreview,BlocState>(
+      bloc: _bloc,
+      builder: (context, state) {
+          
+        if (state is StateIsInitializing || state is StateIsCapture)
+        {
+          return _fcvBuildIsCapture(context);
+        } 
+        else if (state is StateIsLoading)
+        {
+          return _fcvBuildIsLoading(context);
+        }
+        else if (state is StateIsSuccessFull)
+        {
+          return _fcvBuildSuccessFull(context);
+        }
+        else if (state is StateIsFailure)
+        {
+          return _fcvBuildFailure();
+        }
+        return Container();
+      }),
+    ],
+  );
+}
+
+Widget _fcvBuildIsCapture(BuildContext context)
+{
+  var _height = MediaQuery.of(context).size.height;
+  return Container(
+    margin: const EdgeInsets.all(5),
+    alignment: Alignment.center,
+    height: _height* 0.12,
+    decoration: const BoxDecoration(
+      color: Colors.red,
+      shape: BoxShape.rectangle,),
+    child: Icon(Icons.link, 
+      color: Colors.grey,
+      size: _height* 0.10),
+  );
+}
+
+Widget _fcvBuildIsLoading(BuildContext context)
+{
+  var _height = MediaQuery.of(context).size.height;
+  return Container(
+    margin: const EdgeInsets.all(5),
+    alignment: Alignment.center,
+    height: _height* 0.12,
+    decoration: const BoxDecoration(
+      color: Colors.red,
+      shape: BoxShape.rectangle,),
+    child: const CircularProgressIndicator(strokeWidth: 5),
+  );
+}
+
+Widget _fcvBuildSuccessFull(BuildContext context)
+{
+  _bloc.data
+  var _height = MediaQuery.of(context).size.height;
+  return Container(
+    margin: const EdgeInsets.all(5),
+    alignment: Alignment.center,
+    height: _height* 0.12,
+    decoration: const BoxDecoration(
+      color: Colors.red,
+      shape: BoxShape.rectangle,),
+    child: Icon(Icons.link, 
+      color: Colors.grey,
+      size: _height* 0.10),
+  );
+}
+
+//---------------------------------------------------------------------------
 // Boton guardar
 //---------------------------------------------------------------------------
 /// guardar los cambios realizados
@@ -68,7 +172,6 @@ Widget _fobBuildButtonSaveLink(Function fcOnSelectItem)
     }
   });
 }
-
 /// Boton Accion 
 Widget _fobViewButtonAction(String tcrLabel,  VoidCallback tobButtonPressed)
 {
@@ -92,65 +195,6 @@ Widget _fobViewButtonAction(String tcrLabel,  VoidCallback tobButtonPressed)
       onPressed: tobButtonPressed
     ),
   );
-}
-
-//---------------------------------------------------------------------------
-// Vista capura de datos
-//---------------------------------------------------------------------------
-
-/// Vista formulario
-Widget _viewForm(BuildContext context)
-{
-    var _height = MediaQuery.of(context).size.height;
-
-    return ListView(
-      children: <Widget>[
-
-        _fobViewAppBarSearch(context),
-        Container(
-          margin: const EdgeInsets.all(5),
-          height: _height* 0.40,
-          decoration: const BoxDecoration(
-            color: Colors.grey,
-            shape: BoxShape.rectangle,),
-          //child: _fobTextSearchAndButton(),
-        ),
-
-      ],
-    );
-}
-
-// vista gestion bloc
-Widget _PreViewbuild(BuildContext context)
-{
-    _height = MediaQuery.of(context).size.height;
-    _width  = MediaQuery.of(context).size.width;
-
-    _lduFontMsjSize = MediaQuery.of(context).size.height * 0.020;
-    return Scaffold(
-    body: BlocBuilder<SaleOfferBloc,StandardEditionState>(
-      bloc: _lobBloc,
-      builder: (BuildContext context, StandardEditionState state)
-      {
-        if (state is StandardEditionStateIsSaving)
-        {
-          return _fcvBuildSaving();
-        } 
-        else if (state is StandardEditionStateIsSuccessFull)
-        {
-          return _fcvBuildSuccessFull();
-        }
-        else if (state is StandardEditionStateIsFailure)
-        {
-          return _fcvBuildFailure();
-        }
-        else if (state is StandardEditionStateIsInitializing || state is StandardEditionStateIsCapture)
-        {
-          return _fobBuildForm();
-        }
-        return Container();
-      }),
-    );
 }
 
 /// Boton para ejecutar la busqueda
