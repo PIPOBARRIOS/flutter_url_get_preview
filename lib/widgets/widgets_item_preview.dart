@@ -19,18 +19,6 @@ Widget fobBuildPreview(BuildContext context, PreviewData tobReg)
           borderRadius: BorderRadius.circular(30),
           child: Column(
             children: <Widget>[
-              SizedBox(height: _scale*0.018),
-              // Titulo
-              Container(
-                alignment: Alignment.centerLeft,
-                padding: const EdgeInsets.all(10),
-                child: Text(tobReg.title!, 
-                  style: TextStyle(
-                    color: Colors.black54,
-                    fontWeight: FontWeight.bold,
-                    fontSize: _scale*0.017)
-                ),
-              ),
               // Imagen
               Container(
                 height: _scale*0.40,
@@ -40,7 +28,18 @@ Widget fobBuildPreview(BuildContext context, PreviewData tobReg)
                 child: Image(image: NetworkImage(tobReg.image!.url, scale: 0.2), 
                   fit: BoxFit.cover),
               ),
-              
+              // Titulo
+              Container(
+                alignment: Alignment.centerLeft,
+                color: Colors.grey[200],
+                padding: const EdgeInsets.all(10),
+                child: Text(tobReg.title!, 
+                  style: TextStyle(
+                    color: Colors.black54,
+                    fontWeight: FontWeight.bold,
+                    fontSize: _scale*0.020)
+                ),
+              ),
               // Descripción
               Container(
                 padding: const EdgeInsets.all(10),

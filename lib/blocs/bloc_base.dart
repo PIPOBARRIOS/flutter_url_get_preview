@@ -117,7 +117,7 @@ class BlocPreview extends Bloc<BlocEvent, BlocState>
 
       // Cargar los datos desde la base de datos
       await getPreviewData(event.message).then((tcrValue) {
-        if (tcrValue.title!.isNotEmpty) // se ejecuto sin error
+        if (tcrValue.image != null) // se ejecuto sin error
         {   
           regData = tcrValue;
           _tmpInregData.add(tcrValue);

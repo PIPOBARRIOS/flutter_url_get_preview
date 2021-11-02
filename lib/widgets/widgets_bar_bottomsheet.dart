@@ -101,7 +101,7 @@ Widget _fcvPreViewbuild(BuildContext context)
           }
           else if (state is StateIsFailure)
           {
-            return _fcvBuildFailure(context);
+            return _fcvBuildFailure(state.msjError, context);
           }
           return Container();
         }
@@ -139,9 +139,33 @@ Widget _fcvBuildIsLoading(BuildContext context)
   );
 }
 
-Widget _fcvBuildFailure(BuildContext context)
+Widget _fcvBuildFailure(String message, BuildContext context)
 {
   var _height = MediaQuery.of(context).size.height;
+
+  return Container(
+    margin: const EdgeInsets.all(5),
+    alignment: Alignment.center,
+    height: _height* 0.35,
+    decoration: const BoxDecoration(
+      shape: BoxShape.rectangle,),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Icon(Icons.error, 
+          color: Colors.red,
+          size: _height* 0.10),    
+        const SizedBox(width: 5, height: 20,),
+        Text(message, 
+          style: const TextStyle(
+          color: Colors.grey,
+          fontSize: 14),
+        ),
+      ],
+    ),
+  );
+
+  /*
   return Container(
     margin: const EdgeInsets.all(5),
     alignment: Alignment.center,
@@ -153,6 +177,8 @@ Widget _fcvBuildFailure(BuildContext context)
       color: Colors.red,
       size: _height* 0.10),
   );
+  */
+
 }
 
 Widget _fcvBuildSuccessFull(BuildContext context)
@@ -295,6 +321,8 @@ Widget _fobViewAppBarSearch(BuildContext context)
                       elevation: 5,
                       backgroundColor: Colors.teal[300],
                       onPressed: () {
+                        // ocultar el teclado
+                         FocusScope.of(context).requestFocus(FocusNode());
                         //Lanzar la busqueda
                         _fcvStarSearch(_lobController.text);
                       }
