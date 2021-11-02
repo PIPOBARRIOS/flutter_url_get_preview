@@ -56,6 +56,8 @@ Future<PreviewData> getPreviewData(String tcrText, {String? proxy}) async
 
     final imageRegexp = RegExp(lcrRegexImageContentType);
 
+    //print(response.body);
+
     if (imageRegexp.hasMatch(response.headers['content-type'] ?? '')) 
     {
       final imageSize = await _getImageSize(previewDataUrl);
@@ -77,6 +79,9 @@ Future<PreviewData> getPreviewData(String tcrText, {String? proxy}) async
     if (description != null) { previewDataDescription = description.trim(); }
 
     final imageUrls = _getImageUrls(document, url);
+
+    //final video = _getVidelosUrls(document, url);
+
 
     Size imageSize;
     String imageUrl;
@@ -164,6 +169,51 @@ String? _getDescription(Document document)
   return _getMetaContent(document, 'og:description') ??
       _getMetaContent(document, 'description') ??
       _getMetaContent(document, 'twitter:description');
+}
+
+/// Buscar las urls que contienen imagen
+List<String> _getVidelosUrls(Document document, String baseUrl) 
+{
+  var meta = document.getElementsByTagName('meta');
+    print(' total '+meta.length.toString());
+    print("titulo  " + document.getElementsByTagName('title')[0].innerHtml);
+    //print("codigo  " + document.getElementsByTagName('og:description')[0].innerHtml);
+
+    //var videoTags = document.getElementsByTagName('og:description');
+    print(" descripcion "+_getMetaContent(document, 'og:description')!);
+    //print(" video "+_getMetaContent(document, 'video')!);
+
+    meta = document.getElementsByTagName('video');
+
+    print("total-- "+meta.length.toString());
+    for( var i = 0; i < meta.length; i++ )
+    {
+      print( "tags -----" + meta[i].attributes['og:video'].toString());
+      print( "tags -----" + meta[i].attributes['og:source'].toString());
+      //print( "tags -----" + meta[i].attributes['src'].toString());
+      
+      //console.log( vids.item(i).getElementsByTagName('source')[i].src);      
+
+    }
+    
+  /*
+  var attribute = 'content';
+  var elements = meta.where((e) =>
+            e.attributes['property'] == 'og:video' ||
+            e.attributes['property'] == 'video' ||
+            e.attributes['property'] == 'twitter:video').toList();
+
+  if (elements.isEmpty) 
+  {
+    for (var element in meta) {
+      if (element.attributes['property']!.contains('video'))
+      {
+        print(" -- video -------------- " +element.innerHtml);
+      } 
+    }
+  }
+  */
+  return ['ok'];
 }
 
 /// Buscar las urls que contienen imagen
