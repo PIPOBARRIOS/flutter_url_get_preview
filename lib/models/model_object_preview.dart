@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-//import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
+import '../utility/utility.dart';
 
 //-------------------------------------------------------------- 
 // PreviewData: Clase para guardar los datos obtenidos de la Url
@@ -10,6 +10,8 @@ import 'package:json_annotation/json_annotation.dart';
 // ignore: must_be_immutable
 class PreviewData extends Equatable {
 
+  /// Tipo contenido
+  TypeContext? type;
   /// Texto descripcion del contenido (usualmente og:description meta tag)
   String? description;
 
@@ -23,6 +25,7 @@ class PreviewData extends Equatable {
   String? title;
 
   PreviewData({
+     this.type=TypeContext.undefined, 
      this.description,
      this.image,
      this.link,
@@ -44,6 +47,7 @@ class PreviewData extends Equatable {
                         String? title}) 
   {
     return PreviewData(
+      type: type,
       description: description,
       image: image,
       link: link,

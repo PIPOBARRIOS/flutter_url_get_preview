@@ -23,6 +23,7 @@ Future<PreviewData> getPreviewData(String tcrText, {String? proxy}) async
 
   var previewData = PreviewData();
 
+  TypeContext? previewDataType;
   String? previewDataDescription;
   PreviewDataImage? previewDataImage;
   String? previewDataTitle;
@@ -34,12 +35,12 @@ Future<PreviewData> getPreviewData(String tcrText, {String? proxy}) async
     final emailRegexp = RegExp(lcrRegexEmail, caseSensitive: false);
     final textWithoutEmails = tcrText.replaceAllMapped(emailRegexp,      
                                                       (match) => '').trim();
-    if (textWithoutEmails.isEmpty) return previewData;
+    if (textWithoutEmails.isEmpty) return previewData; // regresa vacio
 
     // encontrar link dentro de un texto
     final urlRegexp = RegExp(lcrRegexLink, caseSensitive: false);
     final matches = urlRegexp.allMatches(textWithoutEmails);
-    if (matches.isEmpty) return previewData;
+    if (matches.isEmpty) return previewData; // regresa vacio
 
     var url = textWithoutEmails.substring(matches.first.start, matches.first.end);
 

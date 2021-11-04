@@ -1,5 +1,26 @@
 import 'package:meta/meta.dart';
 
+/// Para poder previsualizar videos segun el origen
+enum TypeContext {
+  /// Videos de Youtube
+  videoyoutube,
+  /// Imagen desde instagram
+  imageinstagram,
+  /// Video instagram
+  videoinstagram,
+  /// Video de Tiktok
+  videotiktok,
+  /// Video de facebook
+  videofacebook,
+  /// imagen facebook
+  imagefacebook,
+  /// video desde cualquier origen formato:
+  /// (MP4/AVI/MKV/FLV/MOV/WMV/DIVX/H.264)
+  videovarious,
+  /// url de cualquier origen no definido
+  undefined,
+}
+
 /// Represents the size object
 @immutable
 class Size {
