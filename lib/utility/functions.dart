@@ -99,6 +99,8 @@ Future<PreviewData> getPreviewData(String tcrText, {String? proxy}) async
       previewDataImage = PreviewDataImage(height: imageSize.height,
                                           url: imageUrl,
                                           width: imageSize.width);
+
+      print(" -- url imagen -------------- " +imageUrl);
     }
     return PreviewData(
       description: previewDataDescription,
@@ -172,7 +174,7 @@ String? _getDescription(Document document)
       _getMetaContent(document, 'twitter:description');
 }
 
-/// Buscar las urls que contienen imagen
+/// Buscar las urls que contienen videos
 List<String> _getVidelosUrls(Document document, String baseUrl) 
 {
   var meta = document.getElementsByTagName('meta');
@@ -226,15 +228,19 @@ List<String> _getImageUrls(Document document, String baseUrl)
             e.attributes['property'] == 'og:image' ||
             e.attributes['property'] == 'twitter:image').toList();
 
+    print("aqui voy 1");
   if (elements.isEmpty) 
   {
+    print("aqui voy 2");
     elements = document.getElementsByTagName('img');
     attribute = 'src';
   }
 
   return elements.fold<List<String>>([], (previousValue, element) 
   {
+    print("aqui voy 3 attr "+elements.length.toString()+" -------  "+element.attributes[attribute]!.trim());
     final actualImageUrl = _getActualImageUrl(baseUrl, element.attributes[attribute]?.trim());
+    print("aqui voy 3 "+actualImageUrl!);
 
     return actualImageUrl != null ? [...previousValue, actualImageUrl] : previousValue;
   });

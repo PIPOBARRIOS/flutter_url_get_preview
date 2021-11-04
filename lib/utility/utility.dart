@@ -43,6 +43,8 @@ String? fcvGetIdVideoUrlYoutube(String tcrUrlVideo, {bool trimWhitespaces = true
 {
     if (!tcrUrlVideo.contains("http") && (tcrUrlVideo.length == 11)) return tcrUrlVideo;
 
+    if (!tcrUrlVideo.toLowerCase().startsWith('https://www.youtube.com')) return ""; // no es un link
+
     if (trimWhitespaces) tcrUrlVideo = tcrUrlVideo.trim(); // quitar los espacios
 
     for (var exp in [RegExp(r"^https:\/\/(?:www\.|m\.)?youtube\.com\/watch\?v=([_\-a-zA-Z0-9]{11}).*$"),
