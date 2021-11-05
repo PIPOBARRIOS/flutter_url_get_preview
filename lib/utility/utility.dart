@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:meta/meta.dart';
 
 /// Para poder previsualizar videos segun el origen
@@ -39,7 +41,7 @@ class Size {
 
 /// Extraer el id del video en una Url de Youtube 
 /// para usuar en la url embebida en navegador ejemplo (https://www.youtube.com/embed/L4iLMRHVmZ8)
-String? fcvGetIdVideoUrlYoutube(String tcrUrlVideo, {bool trimWhitespaces = true}) 
+String? fcrGetIdVideoUrlYoutube(String tcrUrlVideo, {bool trimWhitespaces = true}) 
 {
     if (!tcrUrlVideo.contains("http") && (tcrUrlVideo.length == 11)) return tcrUrlVideo;
 
@@ -56,4 +58,13 @@ String? fcvGetIdVideoUrlYoutube(String tcrUrlVideo, {bool trimWhitespaces = true
     }
 
     return null;
+}
+
+/// convertir codigo string a formato compatible HTML para 
+/// cargar como una url en el navegador WebView 
+String fcrHtmlToStringUri(String tcrStringCode) 
+{
+  return Uri.dataFromString(tcrStringCode,
+                            mimeType: 'text/html', 
+                            encoding: Encoding.getByName('utf-8')).toString();
 }
