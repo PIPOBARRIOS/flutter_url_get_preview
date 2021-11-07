@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 import '../models/model_object_preview.dart';
 import '../utility/utility.dart';
 
@@ -81,6 +84,29 @@ Widget fobBuildPreviewImage(BuildContext context, PreviewData tobReg)
 // Gestion vista videos
 //----------------------------------------------
 
+Widget _buildWebView(String codeHtmlEmbed) {
+
+  Completer<WebViewController>? _controller = Completer<WebViewController>();
+  var _lcrHtmlCode = codeHtmlEmbed.contains("https://www.youtube.com") ||
+                     codeHtmlEmbed.contains("https://www.tiktok.com")?
+                                    codeHtmlEmbed : fcrHtmlToStringUri(_getHtmlBody(codeHtmlEmbed));
+
+    return SizedBox(
+      height: 420,
+      child: WebView(
+        initialUrl: _lcrHtmlCode,
+        javascriptMode: JavascriptMode.unrestricted,
+        onWebViewCreated: (WebViewController webViewController) {
+          if (_controller.isCompleted == false)
+          {
+            _controller.complete(webViewController);
+          }
+        }
+      )
+    );
+  }
+
+
 /// Html para Embeber el codigo vista del video
 String _getHtmlBody(String tcrCodeEmbed) => """
       <html>
@@ -101,3 +127,41 @@ String _getHtmlBody(String tcrCodeEmbed) => """
         </body>
       </html>
 """;
+
+// Youtube
+// codigo del video - ejemplo: tcrKeyVideo ="VSzo940auvk" video https://www.youtube.com/watch?v=VSzo940auvk 
+/// Codigo Html para incrustar
+String _getHtmlEmbedYoutube(String tcrKeyVideo) => "https://www.youtube.com/embed/" + tcrKeyVideo;
+
+// Instagram embedded
+// link del video ejemplo: "https://www.instagram.com/tv/CRFvnXkJkjP/?utm_source=ig_web_copy_link";
+/// Codigo html para incrustar
+String _getHtmlEmbedInstagram(String tcrUrlVideo) => """
+  <blockquote class="instagram-media" 
+    data-instgrm-captioned data-instgrm-permalink="$tcrUrlVideo" 
+    data-instgrm-version="12" 
+    style=" background:#FFF; border:0; border-radius:3px; 
+      box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); 
+      margin: 1px; max-width:540px; min-width:326px; 
+      padding:0; width:99.375%; 
+      width:-webkit-calc(100% - 2px); width:calc(100% - 2px);">
+    <div style="padding:16px;">
+      <a href="$tcrUrlVideo" 
+        style=" background:#FFFFFF; line-height:0; 
+        padding:0 0; text-align:center; 
+        text-decoration:none; width:100%;" target="_blank">
+      </a>
+    </div>
+  </blockquote>
+  <script type="text/javascript" src="https://www.instagram.com/embed.js"></script>
+""";
+
+//-------------------------------------------------
+// Facebook embedded
+//-------------------------------------------------
+// link video ejemplo: "https://www.facebook.com/watch/?v=340373467856175&ref=sharing"; 
+// codigo html para incrustar
+String _getHtmlEmbedFaceBook(String tcrUrlVideo) => """ 
+  <div id="fb-root"></div><div class="fb-video" data-href="$tcrUrlVideo"></div>
+  <script type="text/javascript" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.2"></script>
+"""; 
