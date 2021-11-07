@@ -5,27 +5,12 @@ import 'package:webview_flutter/webview_flutter.dart';
 import '../models/model_object_preview.dart';
 import '../utility/utility.dart';
 
-
-/// Mostrar la vista previa 
-Widget fobBuildPreview(BuildContext context, PreviewData tobReg) 
-{
-  if (tobReg.type == TypeContext.undefined)
-  {
-    // ese una url de cualquier origen con una imagen, titulo y descripción.
-    return fobBuildPreviewImage(context,tobReg);
-  }
-  else
-  {
-    return fobBuildPreviewImage(context,tobReg);
-  }
-}
-
 //----------------------------------------------
 // Gestion vista imagenes
 //----------------------------------------------
 
 /// Mostrar la vista previa imagenes
-Widget fobBuildPreviewImage(BuildContext context, PreviewData tobReg) 
+Widget fobBuildPreview(BuildContext context, PreviewData tobReg) 
 {
   double _height = MediaQuery.of(context).size.height;
   double _width = MediaQuery.of(context).size.width;
@@ -43,6 +28,7 @@ Widget fobBuildPreviewImage(BuildContext context, PreviewData tobReg)
           child: Column(
             children: <Widget>[
               // Imagen
+              /*
               Container(
                 height: _scale*0.40,
                 width: _width,
@@ -51,6 +37,7 @@ Widget fobBuildPreviewImage(BuildContext context, PreviewData tobReg)
                 child: Image(image: NetworkImage(tobReg.image!.url, scale: 0.2), 
                   fit: BoxFit.cover),
               ),
+              */
               // Titulo
               Container(
                 alignment: Alignment.centerLeft,
@@ -78,6 +65,31 @@ Widget fobBuildPreviewImage(BuildContext context, PreviewData tobReg)
         )
       )
   );
+}
+
+/// Mostrar la vista previa 
+Widget _fobBuildPreviewCustom(BuildContext context, PreviewData tobReg) 
+{
+  double _height = MediaQuery.of(context).size.height;
+  double _width = MediaQuery.of(context).size.width;
+  var _scale = _height;
+  _scale = _width > _scale ?  _width : _scale;
+
+  if (tobReg.type == TypeContext.undefined)
+  {
+    // ese una url de cualquier origen con una imagen, titulo y descripción.
+    return Container(
+      height: _scale*0.40,
+      width: _width,
+      decoration: const BoxDecoration(shape: BoxShape.rectangle,),
+        child: Image(image: NetworkImage(tobReg.image!.url, scale: 0.2), 
+          fit: BoxFit.cover),
+    );
+  }
+  else if (tobReg.type == TypeContext.videotiktok)
+  {
+    return _buildWebView(context,tobReg);
+  }
 }
 
 //----------------------------------------------
