@@ -1,8 +1,28 @@
 import 'package:flutter/material.dart';
 import '../models/model_object_preview.dart';
+import '../utility/utility.dart';
 
-/// Mostrar la vista previa
+
+/// Mostrar la vista previa 
 Widget fobBuildPreview(BuildContext context, PreviewData tobReg) 
+{
+  if (tobReg.type == TypeContext.undefined)
+  {
+    // ese una url de cualquier origen con una imagen, titulo y descripción.
+    return fobBuildPreviewImage(context,tobReg);
+  }
+  else
+  {
+    return fobBuildPreviewImage(context,tobReg);
+  }
+}
+
+//----------------------------------------------
+// Gestion vista imagenes
+//----------------------------------------------
+
+/// Mostrar la vista previa imagenes
+Widget fobBuildPreviewImage(BuildContext context, PreviewData tobReg) 
 {
   double _height = MediaQuery.of(context).size.height;
   double _width = MediaQuery.of(context).size.width;
@@ -56,3 +76,28 @@ Widget fobBuildPreview(BuildContext context, PreviewData tobReg)
       )
   );
 }
+
+//----------------------------------------------
+// Gestion vista videos
+//----------------------------------------------
+
+/// Html para Embeber el codigo vista del video
+String _getHtmlBody(String tcrCodeEmbed) => """
+      <html>
+        <head>
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          <style>
+            *{box-sizing: border-box;margin:0px; padding:0px;}
+              #widget {
+                        display: flex;
+                        justify-content: center;
+                        margin: 0 auto;
+                        max-width:100%;
+                    }      
+          </style>
+        </head>
+        <body>
+          <div id="widget">$tcrCodeEmbed</div>
+        </body>
+      </html>
+""";
