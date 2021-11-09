@@ -38,6 +38,14 @@ Widget fobBuildPreview(BuildContext context, PreviewData tobReg)
                   fit: BoxFit.cover),
               ),
               */
+              // Imagen o video
+              Container(
+                height: _scale*0.40,
+                width: _width,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.rectangle,),
+                child: _fobBuildPreviewCustom(tobReg, _scale*0.40),
+              ),
               // Titulo
               Container(
                 alignment: Alignment.centerLeft,
@@ -68,27 +76,17 @@ Widget fobBuildPreview(BuildContext context, PreviewData tobReg)
 }
 
 /// Mostrar la vista previa 
-Widget _fobBuildPreviewCustom(BuildContext context, PreviewData tobReg) 
+Widget _fobBuildPreviewCustom(PreviewData tobReg, double tduHeight) 
 {
-  double _height = MediaQuery.of(context).size.height;
-  double _width = MediaQuery.of(context).size.width;
-  var _scale = _height;
-  _scale = _width > _scale ?  _width : _scale;
-
   if (tobReg.type == TypeContext.undefined)
   {
     // ese una url de cualquier origen con una imagen, titulo y descripción.
-    return Container(
-      height: _scale*0.40,
-      width: _width,
-      decoration: const BoxDecoration(shape: BoxShape.rectangle,),
-        child: Image(image: NetworkImage(tobReg.image!.url, scale: 0.2), 
-          fit: BoxFit.cover),
-    );
+    return Image(image: NetworkImage(tobReg.image!.url, scale: 0.2), 
+          fit: BoxFit.cover);
   }
-  else if (tobReg.type == TypeContext.videotiktok)
+  else
   {
-    return _buildWebView(context,tobReg);
+    return _buildWebView(tobReg.link!, tduHeight);
   }
 }
 
@@ -96,7 +94,7 @@ Widget _fobBuildPreviewCustom(BuildContext context, PreviewData tobReg)
 // Gestion vista videos
 //----------------------------------------------
 
-Widget _buildWebView(String codeHtmlEmbed) {
+Widget _buildWebView(String codeHtmlEmbed, double tduHeight) {
 
   Completer<WebViewController>? _controller = Completer<WebViewController>();
   var _lcrHtmlCode = codeHtmlEmbed.contains("https://www.youtube.com") ||
@@ -104,7 +102,7 @@ Widget _buildWebView(String codeHtmlEmbed) {
                                     codeHtmlEmbed : fcrHtmlToStringUri(_getHtmlBody(codeHtmlEmbed));
 
     return SizedBox(
-      height: 420,
+      height: tduHeight,
       child: WebView(
         initialUrl: _lcrHtmlCode,
         javascriptMode: JavascriptMode.unrestricted,
