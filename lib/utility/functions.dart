@@ -100,7 +100,7 @@ Future<PreviewData> getPreviewData(String tcrText, {String? proxy}) async
                                           url: imageUrl,
                                           width: imageSize.width);
 
-      print(" -- url imagen -------------- " +imageUrl);
+      //print(" -- url imagen -------------- " +imageUrl);
     }
     return PreviewData(
       description: previewDataDescription,
@@ -118,6 +118,32 @@ Future<PreviewData> getPreviewData(String tcrText, {String? proxy}) async
       title: previewDataTitle,
     );
   }
+}
+
+/// Clasificar urls con posibles videos (instagram,facebook,Tiktok,Youtube)
+TypeContext _getTypeUrlsWithVideo(String tcrUrl) 
+{
+  var _type = TypeContext.undefined;
+  if (tcrUrl.startsWith('https://www.youtube.com')) 
+  {
+    _type = TypeContext.videoyoutube;
+  }
+  else if (tcrUrl.startsWith('https://www.facebook.com')) 
+  {
+    if (tcrUrl.contains('/videos/') || tcrUrl.contains('/watch/'))
+    {
+      _type = TypeContext.videofacebook;
+    } 
+  }
+  else if (tcrUrl.startsWith('https://www.instagram.com')) 
+  {
+    if (tcrUrl.contains('/reel/') || tcrUrl.contains('/tv/'))
+    {
+      _type = TypeContext.videoinstagram;
+    } 
+  }
+
+  return _type;
 }
 
 /// cuando hay un proxy
@@ -228,19 +254,15 @@ List<String> _getImageUrls(Document document, String baseUrl)
             e.attributes['property'] == 'og:image' ||
             e.attributes['property'] == 'twitter:image').toList();
 
-    print("aqui voy 1");
   if (elements.isEmpty) 
   {
-    print("aqui voy 2");
     elements = document.getElementsByTagName('img');
     attribute = 'src';
   }
 
   return elements.fold<List<String>>([], (previousValue, element) 
   {
-    print("aqui voy 3 attr "+elements.length.toString()+" -------  "+element.attributes[attribute]!.trim());
     final actualImageUrl = _getActualImageUrl(baseUrl, element.attributes[attribute]?.trim());
-    print("aqui voy 3 "+actualImageUrl!);
 
     return actualImageUrl != null ? [...previousValue, actualImageUrl] : previousValue;
   });

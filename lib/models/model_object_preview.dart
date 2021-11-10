@@ -57,7 +57,7 @@ class PreviewData extends Equatable {
 
   /// Equatable props
   @override
-  List<Object?> get props => [description, image, link, title];
+  List<Object?> get props => [type, description, image, link, title];
 }
 
 //-------------------------------------------------------------- 

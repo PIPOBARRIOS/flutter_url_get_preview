@@ -94,27 +94,26 @@ Widget _fobBuildPreviewCustom(PreviewData tobReg, double tduHeight)
 // Gestion vista videos
 //----------------------------------------------
 
-Widget _buildWebView(String codeHtmlEmbed, double tduHeight) {
+Widget _buildWebView(String tcrUrlToEmbed, double tduHeight) {
 
   Completer<WebViewController>? _controller = Completer<WebViewController>();
-  var _lcrHtmlCode = codeHtmlEmbed.contains("https://www.youtube.com") ||
-                     codeHtmlEmbed.contains("https://www.tiktok.com")?
-                                    codeHtmlEmbed : fcrHtmlToStringUri(_getHtmlBody(codeHtmlEmbed));
-
-    return SizedBox(
-      height: tduHeight,
-      child: WebView(
-        initialUrl: _lcrHtmlCode,
-        javascriptMode: JavascriptMode.unrestricted,
-        onWebViewCreated: (WebViewController webViewController) {
-          if (_controller.isCompleted == false)
-          {
-            _controller.complete(webViewController);
-          }
+  var _lcrHtmlCode = tcrUrlToEmbed.contains("https://www.youtube.com") ||
+                     tcrUrlToEmbed.contains("https://www.tiktok.com")?
+                                    tcrUrlToEmbed : fcrHtmlToStringUri(_getHtmlBody(tcrUrlToEmbed));
+  return SizedBox(
+    height: tduHeight,
+    child: WebView(
+      initialUrl: _lcrHtmlCode,
+      javascriptMode: JavascriptMode.unrestricted,
+      onWebViewCreated: (WebViewController webViewController) {
+        if (_controller.isCompleted == false)
+        {
+          _controller.complete(webViewController);
         }
-      )
-    );
-  }
+      }
+    )
+  );
+}
 
 
 /// Html para Embeber el codigo vista del video
