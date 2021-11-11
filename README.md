@@ -6,7 +6,7 @@ Data persistence and state management was performed using the Bloc pattern, rxDa
 
 ### ⚡&ensp;Social Media
 
-[<img align="center" alt="jose-barrios-jimenez | LinkedIn" width="22px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/linkedin.svg" />](https://www.linkedin.com/in/jose-barrios-jimenez "Linkedin José Barrios")&ensp;Linkedin: [@José Barrios Jiménez](https://www.linkedin.com/in/jose-barrios-jimenez "Linkedin José Barrios")
+[<img align="center" alt="jose-barrios-jimenez | LinkedIn" width="22px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/linkedin.svg" />](https://www.linkedin.com/in/jose-barrios-jimenez "Linkedin José Barrios")&ensp;Linkedin: [@José Barrios](https://www.linkedin.com/in/jose-barrios-jimenez "Linkedin José Barrios")
 
 ### ✌&ensp;Preview Application
 
