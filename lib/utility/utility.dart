@@ -41,23 +41,28 @@ class Size {
 
 /// Extraer el id del video en una Url de Youtube 
 /// para usuar en la url embebida en navegador ejemplo (https://www.youtube.com/embed/L4iLMRHVmZ8)
-String? fcrGetIdVideoUrlYoutube(String tcrUrlVideo, {bool trimWhitespaces = true}) 
+String fcrGetIdVideoUrlYoutube(String tcrUrlVideo, {bool trimWhitespaces = true}) 
 {
     if (!tcrUrlVideo.contains("http") && (tcrUrlVideo.length == 11)) return tcrUrlVideo;
 
-    if (!tcrUrlVideo.toLowerCase().startsWith('https://www.youtube.com')) return ""; // no es un link
+    if (!tcrUrlVideo.toLowerCase().startsWith('https://www.youtube.com') &&
+        !tcrUrlVideo.toLowerCase().startsWith('https://youtu.be') &&
+        !tcrUrlVideo.toLowerCase().startsWith('https://youtube.com') ) return ""; // no es un link
 
     if (trimWhitespaces) tcrUrlVideo = tcrUrlVideo.trim(); // quitar los espacios
 
-    for (var exp in [RegExp(r"^https:\/\/(?:www\.|m\.)?youtube\.com\/watch\?v=([_\-a-zA-Z0-9]{11}).*$"),
-                     RegExp(r"^https:\/\/(?:www\.|m\.)?youtube(?:-nocookie)?\.com\/embed\/([_\-a-zA-Z0-9]{11}).*$"),
-                     RegExp(r"^https:\/\/youtu\.be\/([_\-a-zA-Z0-9]{11}).*$")])  {
+    var _lcrExpre = r"^https:\/\/(?:www\.|m\.)?(?:youtu\.be\/|youtube\.com\/";
+    var _lcrExpre1 = r"(?:(?:watch)?\?(?:.*&)?v(?:i)?=|(?:embed|v|vi|user)\/))([_\-a-zA-Z0-9]{11}).*$";
+    _lcrExpre = _lcrExpre + _lcrExpre1;
 
+    //for (var exp in [RegExp(r"^https:\/\/(?:www\.|m\.)?(?:youtu\.be\/|youtube\.com\/(?:(?:watch)?\?(?:.*&)?v(?:i)?=|(?:embed|v|vi|user)\/))([_\-a-zA-Z0-9]{11}).*$")])  {
+    for (var exp in [RegExp(_lcrExpre)])  
+    {
       Match? match = exp.firstMatch(tcrUrlVideo);
-      if (match != null && match.groupCount >= 1) return match.group(1); // devilver la Id del video
+      if (match != null && match.groupCount >= 1) return match.group(1)!; // devolver Id del video
     }
 
-    return null;
+    return "";
 }
 
 /// convertir codigo string a formato compatible HTML para 

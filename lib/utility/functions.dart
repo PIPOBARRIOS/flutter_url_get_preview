@@ -23,7 +23,6 @@ Future<PreviewData> getPreviewData(String tcrText, {String? proxy}) async
 
   var previewData = PreviewData();
 
-  TypeContext? previewDataType;
   String? previewDataDescription;
   PreviewDataImage? previewDataImage;
   String? previewDataTitle;
@@ -103,6 +102,7 @@ Future<PreviewData> getPreviewData(String tcrText, {String? proxy}) async
       //print(" -- url imagen -------------- " +imageUrl);
     }
     return PreviewData(
+      type: _getTypeUrlsWithVideo(previewDataUrl),
       description: previewDataDescription,
       image: previewDataImage,
       link: previewDataUrl,
@@ -124,23 +124,32 @@ Future<PreviewData> getPreviewData(String tcrText, {String? proxy}) async
 TypeContext _getTypeUrlsWithVideo(String tcrUrl) 
 {
   var _type = TypeContext.undefined;
-  if (tcrUrl.startsWith('https://www.youtube.com')) 
+  if ((tcrUrl.startsWith('https://www.youtube.com') || 
+      tcrUrl.startsWith('https://youtube.com') || 
+      tcrUrl.startsWith('https://youtu.be')) && tcrUrl.contains('playlist?list') == false )
   {
     _type = TypeContext.videoyoutube;
   }
-  else if (tcrUrl.startsWith('https://www.facebook.com')) 
+  else if (tcrUrl.startsWith('https://www.facebook.com') || 
+          tcrUrl.startsWith('https://facebook.com')) 
   {
     if (tcrUrl.contains('/videos/') || tcrUrl.contains('/watch/'))
     {
       _type = TypeContext.videofacebook;
     } 
   }
-  else if (tcrUrl.startsWith('https://www.instagram.com')) 
+  else if (tcrUrl.startsWith('https://www.instagram.com') || 
+           tcrUrl.startsWith('https://instagram.com')) 
   {
     if (tcrUrl.contains('/reel/') || tcrUrl.contains('/tv/'))
     {
       _type = TypeContext.videoinstagram;
     } 
+  }
+  else if (tcrUrl.startsWith('https://www.tiktok.com') || 
+           tcrUrl.startsWith('https://tiktok.com')) 
+  {
+    _type = TypeContext.videotiktok;
   }
 
   return _type;

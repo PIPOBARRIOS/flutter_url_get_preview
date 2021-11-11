@@ -78,16 +78,30 @@ Widget fobBuildPreview(BuildContext context, PreviewData tobReg)
 /// Mostrar la vista previa 
 Widget _fobBuildPreviewCustom(PreviewData tobReg, double tduHeight) 
 {
-  if (tobReg.type == TypeContext.undefined)
+  if (tobReg.type == TypeContext.videofacebook)
   {
-    // ese una url de cualquier origen con una imagen, titulo y descripción.
-    return Image(image: NetworkImage(tobReg.image!.url, scale: 0.2), 
-          fit: BoxFit.cover);
+    return _buildWebView(_getHtmlEmbedFaceBook(tobReg.link!), tduHeight);
   }
-  else
+  else if (tobReg.type == TypeContext.videoinstagram)
+  {
+    return _buildWebView(_getHtmlEmbedInstagram(tobReg.link!), tduHeight);
+  }
+  else if (tobReg.type == TypeContext.videoyoutube)
+  {
+    var _idVideo = fcrGetIdVideoUrlYoutube(tobReg.link!);
+    return _idVideo.isNotEmpty? _buildWebView(_getHtmlEmbedYoutube(_idVideo), tduHeight): Container();
+  }
+  else if (tobReg.type == TypeContext.videotiktok)
   {
     return _buildWebView(tobReg.link!, tduHeight);
   }
+  else 
+  {
+    // TypeContext.undefined
+    // ese una url de cualquier origen con una imagen, titulo y descripción.
+    return Image(image: NetworkImage(tobReg.image!.url, scale: 0.2), fit: BoxFit.cover);
+  }
+
 }
 
 //----------------------------------------------
@@ -98,7 +112,10 @@ Widget _buildWebView(String tcrUrlToEmbed, double tduHeight) {
 
   Completer<WebViewController>? _controller = Completer<WebViewController>();
   var _lcrHtmlCode = tcrUrlToEmbed.contains("https://www.youtube.com") ||
-                     tcrUrlToEmbed.contains("https://www.tiktok.com")?
+                     tcrUrlToEmbed.contains("https://youtube.com") ||
+                     tcrUrlToEmbed.contains("https://youtu.be") ||
+                     tcrUrlToEmbed.contains("https://www.tiktok.com") ||
+                     tcrUrlToEmbed.contains("https://tiktok.com")?
                                     tcrUrlToEmbed : fcrHtmlToStringUri(_getHtmlBody(tcrUrlToEmbed));
   return SizedBox(
     height: tduHeight,
