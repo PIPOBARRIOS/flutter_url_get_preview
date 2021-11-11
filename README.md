@@ -1,16 +1,17 @@
-# flutter_url_get_preview
+# Preview Urls with flutter
 
-A new Flutter project.
+Simple application to read urls and preview the content.
+When page contains a video, it embeds it.
 
-## Getting Started
+### ⚡&ensp;Social Media
 
-This project is a starting point for a Flutter application.
+[<img align="center" alt="jose-barrios-jimenez | LinkedIn" width="22px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/linkedin.svg" />](https://www.linkedin.com/in/jose-barrios-jimenez "Linkedin José Barrios")&ensp;Linkedin: [@José Barrios Jiménez](https://www.linkedin.com/in/jose-barrios-jimenez "Linkedin José Barrios")
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### ✌&ensp;Preview Application
+
+|              App Preview             |             Course Preview           |
+| :----------------------------------: | :----------------------------------: |
+| <a href="https://firebasestorage.googleapis.com/v0/b/app-example-a98d6.appspot.com/o/flutter_url_get_preview%2Faplicacion-video1.mp4?alt=media&token=8a0ed8f2-d9ac-414f-9fca-cc9642925dba" target="_blank"><img src="preview.gif" width="350"></a> | <a href="https://johannesmilke.teachable.com/p/home" target="_blank"><img src="https://firebasestorage.googleapis.com/v0/b/web-johannesmilke.appspot.com/o/other%2Fgithub_ad.png?alt=media" width="350"></a> |
+
