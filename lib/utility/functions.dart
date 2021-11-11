@@ -34,12 +34,12 @@ Future<PreviewData> getPreviewData(String tcrText, {String? proxy}) async
     final emailRegexp = RegExp(lcrRegexEmail, caseSensitive: false);
     final textWithoutEmails = tcrText.replaceAllMapped(emailRegexp,      
                                                       (match) => '').trim();
-    if (textWithoutEmails.isEmpty) return previewData;
+    if (textWithoutEmails.isEmpty) return previewData; // regresa vacio
 
     // encontrar link dentro de un texto
     final urlRegexp = RegExp(lcrRegexLink, caseSensitive: false);
     final matches = urlRegexp.allMatches(textWithoutEmails);
-    if (matches.isEmpty) return previewData;
+    if (matches.isEmpty) return previewData; // regresa vacio
 
     var url = textWithoutEmails.substring(matches.first.start, matches.first.end);
 
@@ -55,6 +55,8 @@ Future<PreviewData> getPreviewData(String tcrText, {String? proxy}) async
     final document = parser.parse(response.body);
 
     final imageRegexp = RegExp(lcrRegexImageContentType);
+
+    //print(response.body);
 
     if (imageRegexp.hasMatch(response.headers['content-type'] ?? '')) 
     {
@@ -78,6 +80,9 @@ Future<PreviewData> getPreviewData(String tcrText, {String? proxy}) async
 
     final imageUrls = _getImageUrls(document, url);
 
+    //final video = _getVidelosUrls(document, url);
+
+
     Size imageSize;
     String imageUrl;
 
@@ -93,8 +98,11 @@ Future<PreviewData> getPreviewData(String tcrText, {String? proxy}) async
       previewDataImage = PreviewDataImage(height: imageSize.height,
                                           url: imageUrl,
                                           width: imageSize.width);
+
+      //print(" -- url imagen -------------- " +imageUrl);
     }
     return PreviewData(
+      type: _getTypeUrlsWithVideo(previewDataUrl),
       description: previewDataDescription,
       image: previewDataImage,
       link: previewDataUrl,
@@ -110,6 +118,41 @@ Future<PreviewData> getPreviewData(String tcrText, {String? proxy}) async
       title: previewDataTitle,
     );
   }
+}
+
+/// Clasificar urls con posibles videos (instagram,facebook,Tiktok,Youtube)
+TypeContext _getTypeUrlsWithVideo(String tcrUrl) 
+{
+  var _type = TypeContext.undefined;
+  if ((tcrUrl.startsWith('https://www.youtube.com') || 
+      tcrUrl.startsWith('https://youtube.com') || 
+      tcrUrl.startsWith('https://youtu.be')) && tcrUrl.contains('playlist?list') == false )
+  {
+    _type = TypeContext.videoyoutube;
+  }
+  else if (tcrUrl.startsWith('https://www.facebook.com') || 
+          tcrUrl.startsWith('https://facebook.com')) 
+  {
+    if (tcrUrl.contains('/videos/') || tcrUrl.contains('/watch/'))
+    {
+      _type = TypeContext.videofacebook;
+    } 
+  }
+  else if (tcrUrl.startsWith('https://www.instagram.com') || 
+           tcrUrl.startsWith('https://instagram.com')) 
+  {
+    if (tcrUrl.contains('/reel/') || tcrUrl.contains('/tv/'))
+    {
+      _type = TypeContext.videoinstagram;
+    } 
+  }
+  else if (tcrUrl.startsWith('https://www.tiktok.com') || 
+           tcrUrl.startsWith('https://tiktok.com')) 
+  {
+    _type = TypeContext.videotiktok;
+  }
+
+  return _type;
 }
 
 /// cuando hay un proxy
@@ -164,6 +207,51 @@ String? _getDescription(Document document)
   return _getMetaContent(document, 'og:description') ??
       _getMetaContent(document, 'description') ??
       _getMetaContent(document, 'twitter:description');
+}
+
+/// Buscar las urls que contienen videos
+List<String> _getVidelosUrls(Document document, String baseUrl) 
+{
+  var meta = document.getElementsByTagName('meta');
+    print(' total '+meta.length.toString());
+    print("titulo  " + document.getElementsByTagName('title')[0].innerHtml);
+    //print("codigo  " + document.getElementsByTagName('og:description')[0].innerHtml);
+
+    //var videoTags = document.getElementsByTagName('og:description');
+    print(" descripcion "+_getMetaContent(document, 'og:description')!);
+    //print(" video "+_getMetaContent(document, 'video')!);
+
+    meta = document.getElementsByTagName('video');
+
+    print("total-- "+meta.length.toString());
+    for( var i = 0; i < meta.length; i++ )
+    {
+      print( "tags -----" + meta[i].attributes['og:video'].toString());
+      print( "tags -----" + meta[i].attributes['og:source'].toString());
+      //print( "tags -----" + meta[i].attributes['src'].toString());
+      
+      //console.log( vids.item(i).getElementsByTagName('source')[i].src);      
+
+    }
+    
+  /*
+  var attribute = 'content';
+  var elements = meta.where((e) =>
+            e.attributes['property'] == 'og:video' ||
+            e.attributes['property'] == 'video' ||
+            e.attributes['property'] == 'twitter:video').toList();
+
+  if (elements.isEmpty) 
+  {
+    for (var element in meta) {
+      if (element.attributes['property']!.contains('video'))
+      {
+        print(" -- video -------------- " +element.innerHtml);
+      } 
+    }
+  }
+  */
+  return ['ok'];
 }
 
 /// Buscar las urls que contienen imagen

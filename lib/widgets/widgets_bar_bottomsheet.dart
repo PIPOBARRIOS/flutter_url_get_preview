@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import '../utility/functions.dart';
-import '../blocs/bloc_persistent.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../blocs/bloc_event.dart';
+import '../blocs/bloc_state.dart';
 import '../models/model_object_preview.dart';
-
-/// datos del Registro cargado 
-PreviewData? _lobReg;
+import '../blocs/bloc_base.dart';
+import 'widgets_item_preview.dart';
 
 /// Para persistencia de datos
-UrlPreViewBloc? _bloc;
+late BlocPreview _bloc;
 
 /// Capturar texto
 final _lobController = TextEditingController();
@@ -16,11 +16,13 @@ final _lobController = TextEditingController();
 // Vista tipo Lista
 //---------------------------------------------------------------------------
 /// Menu tipo Hoja inferior
-void fcvMenuBottomSheetViewList(UrlPreViewBloc bloc, 
+void fcvMenuBottomSheetViewList(BlocBase bloc, 
                                 BuildContext context, 
-                                Function(PreviewData) fcOnSelectItem)
+                                VoidCallback fcOnSelectItem)
 {
-  _bloc = bloc;
+  //_bloc = bloc;
+  _bloc = BlocProvider.of<BlocPreview>(context);
+
   var _height = MediaQuery.of(context).size.height;
   //var _width  = MediaQuery.of(context).size.width * 0.95;
  
@@ -52,21 +54,162 @@ void fcvMenuBottomSheetViewList(UrlPreViewBloc bloc,
 }
 
 //---------------------------------------------------------------------------
+// Vista capura de datos
+//---------------------------------------------------------------------------
+
+/// Vista formulario
+Widget _viewForm(BuildContext context)
+{
+  //var _height = MediaQuery.of(context).size.height;
+  //var _width = MediaQuery.of(context).size.width;
+  return ListView(
+    children: <Widget>[
+
+      _fobViewAppBarSearch(context),
+      Container(
+        margin: const EdgeInsets.all(2),
+        //height: _height * 0.60,
+        decoration: const BoxDecoration(
+          //color: Colors.grey,
+          shape: BoxShape.rectangle,),
+          child: _fcvPreViewbuild(context),
+      ),
+    ],
+  );
+}
+
+// vista gestion bloc
+Widget _fcvPreViewbuild(BuildContext context)
+{
+  return Stack(
+    children: <Widget>[ 
+      BlocBuilder<BlocPreview,BlocState>(
+        bloc: _bloc,
+        builder: (context, state) {
+          
+          if (state is StateIsInitializing || state is StateIsCapture)
+          {
+            return _fcvBuildIsCapture(context);
+          } 
+          else if (state is StateIsLoading)
+          {
+            return _fcvBuildIsLoading(context);
+          }
+          else if (state is StateIsSuccessFull)
+          {
+            return _fcvBuildSuccessFull(context);
+          }
+          else if (state is StateIsFailure)
+          {
+            return _fcvBuildFailure(state.msjError, context);
+          }
+          return Container();
+        }
+      ),
+    ],
+  );
+}
+
+Widget _fcvBuildIsCapture(BuildContext context)
+{
+  var _height = MediaQuery.of(context).size.height;
+  return Container(
+    margin: const EdgeInsets.all(5),
+    alignment: Alignment.center,
+    height: _height* 0.35,
+    decoration: const BoxDecoration(
+      //color: Colors.red,
+      shape: BoxShape.rectangle,),
+    child: Icon(Icons.image, 
+      color: Colors.grey,
+      size: _height* 0.10),
+  );
+}
+
+Widget _fcvBuildIsLoading(BuildContext context)
+{
+  var _height = MediaQuery.of(context).size.height;
+  return Container(
+    margin: const EdgeInsets.all(5),
+    alignment: Alignment.center,
+    height: _height* 0.35,
+    decoration: const BoxDecoration(
+      shape: BoxShape.rectangle,),
+    child: const CircularProgressIndicator(strokeWidth: 5),
+  );
+}
+
+Widget _fcvBuildFailure(String message, BuildContext context)
+{
+  var _height = MediaQuery.of(context).size.height;
+
+  return Container(
+    margin: const EdgeInsets.all(5),
+    alignment: Alignment.center,
+    height: _height* 0.35,
+    decoration: const BoxDecoration(
+      shape: BoxShape.rectangle,),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Icon(Icons.error, 
+          color: Colors.red,
+          size: _height* 0.10),    
+        const SizedBox(width: 5, height: 20,),
+        Text(message, 
+          style: const TextStyle(
+          color: Colors.grey,
+          fontSize: 14),
+        ),
+      ],
+    ),
+  );
+
+  /*
+  return Container(
+    margin: const EdgeInsets.all(5),
+    alignment: Alignment.center,
+    height: _height* 0.35,
+    decoration: const BoxDecoration(
+      //color: Colors.red,
+      shape: BoxShape.rectangle,),
+    child: Icon(Icons.error, 
+      color: Colors.red,
+      size: _height* 0.10),
+  );
+  */
+
+}
+
+Widget _fcvBuildSuccessFull(BuildContext context)
+{
+  return fobBuildPreview(context, _bloc.regData);
+}
+
+//---------------------------------------------------------------------------
 // Boton guardar
 //---------------------------------------------------------------------------
 /// guardar los cambios realizados
-Widget _fobBuildButtonSaveLink(Function(PreviewData) fcOnSelectItem)
+Widget _fobBuildButtonSaveLink(VoidCallback fcOnSelectItem)
 {
-  return _fobViewButtonAction("Guardar", (){
-    if (_lobReg != null)
+  return StreamBuilder<PreviewData>(
+    stream: _bloc.g1regData,
+    builder: (BuildContext context, snapshot) 
     {
-      _resetData();
-      fcOnSelectItem(_lobReg!);
+      if (snapshot.data?.title != null)
+      {
+        return snapshot.data!.title!.isNotEmpty ?
+        _fobViewButtonAction("Guardar", () {
+             fcOnSelectItem();
+             _resetData();
+        })
+          : Container();
+      }
+      return Container();
     }
-  });
+  );
 }
-
-/// Mostrar Boton debajo del mensaje
+/// Boton Accion 
 Widget _fobViewButtonAction(String tcrLabel,  VoidCallback tobButtonPressed)
 {
   return Align(
@@ -90,42 +233,11 @@ Widget _fobViewButtonAction(String tcrLabel,  VoidCallback tobButtonPressed)
   );
 }
 
-//---------------------------------------------------------------------------
-// Vista capura de datos
-//---------------------------------------------------------------------------
-
-/// Vista formulario
-Widget _viewForm(BuildContext context)
-{
-    var _height = MediaQuery.of(context).size.height;
-
-    return ListView(
-      children: <Widget>[
-
-        _fobViewAppBarSearch(context),
-        Container(
-          margin: const EdgeInsets.all(5),
-          height: _height* 0.40,
-          decoration: const BoxDecoration(
-            color: Colors.grey,
-            shape: BoxShape.rectangle,),
-          //child: _fobTextSearchAndButton(),
-        ),
-
-      ],
-    );
-}
-
 /// Boton para ejecutar la busqueda
 Widget _fobViewAppBarSearch(BuildContext context)
 {
   double _width = MediaQuery.of(context).size.width;
-
   final _lobFocusNode = FocusNode();
-
-  // cargar los datos desde Bloc
-  var data = _bloc?.fobGetRegisterDataGestion();
-  _lobController.text = data?.link != null ? data!.link!: '';
 
   return Align(
     alignment: Alignment.topCenter,
@@ -133,31 +245,31 @@ Widget _fobViewAppBarSearch(BuildContext context)
     //alignment: Alignment.bottomCenter,
     margin: const EdgeInsets.all(3),
     decoration: BoxDecoration(
-      color: Colors.grey[100],
+      color: Colors.grey[300],
       borderRadius: BorderRadius.circular(40),
     ),
     child: Stack(
       children: <Widget>[
         // icono  
         Container(
-          margin: const EdgeInsets.only(left: 5, top: 3),
+          margin: const EdgeInsets.only(left: 9, top: 7),
           child: const Icon(Icons.link, 
             color: Colors.grey,
             size: 40,
           ),
         ),
         StreamBuilder<String>(
-          stream: _bloc?.g1Url,
+          stream: _bloc.g1Url,
           builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
             return  Container(
-              color: Colors.amber,
+              //color: Colors.amber,
               width: _width*0.65,
               //height: 45,
               padding: const EdgeInsets.only(left: 2),
               margin: const EdgeInsets.only(left: 50, top: 5, bottom: 5),
               child: TextField(
                 style: const TextStyle(
-                    fontSize: 12
+                    fontSize: 14
                 ),
                 decoration: const InputDecoration(
                   hintText: 'Pega el link aqui...' ,
@@ -165,7 +277,7 @@ Widget _fobViewAppBarSearch(BuildContext context)
                 ),
                 controller: _lobController,
                 focusNode: _lobFocusNode,
-                onChanged: _bloc?.onG1UrlChanged,
+                onChanged: _bloc.onG1UrlChanged,
                 keyboardType: TextInputType.multiline,
                 maxLines: null,                       
               )
@@ -174,7 +286,7 @@ Widget _fobViewAppBarSearch(BuildContext context)
         ),
         // Boton limpiar texto
         StreamBuilder<String>(
-          stream: _bloc?.g1Url,
+          stream: _bloc.g1Url,
           builder: (BuildContext context, AsyncSnapshot<String> snapshot) 
           {
             if (snapshot.data != null)
@@ -209,6 +321,8 @@ Widget _fobViewAppBarSearch(BuildContext context)
                       elevation: 5,
                       backgroundColor: Colors.teal[300],
                       onPressed: () {
+                        // ocultar el teclado
+                         FocusScope.of(context).requestFocus(FocusNode());
                         //Lanzar la busqueda
                         _fcvStarSearch(_lobController.text);
                       }
@@ -220,51 +334,26 @@ Widget _fobViewAppBarSearch(BuildContext context)
             return Container();
           }
         ),
-        /*
-        // Ejecutar busqueda
-        Container(
-          height: 45,
-          //color: Colors.cyan,
-          margin: const EdgeInsets.only(top: 5, bottom: 7),
-          alignment: Alignment.centerRight,
-          child: FloatingActionButton(
-            heroTag: UniqueKey(),
-            child: const Icon(Icons.search),
-            elevation: 5,
-            backgroundColor: Colors.teal[300],
-            onPressed: () {
-              //Lanzar la busqueda
-              _fcvStarSearch(_lobController.text);
-            }
-          ),
-        ),
-        */
       ],
     )),
   );
 }
 
 /// Realizar busqueda  de la url dentro del texto
+/// y cargar datos
 void _fcvStarSearch(String tcrText) async
 {
-  print(' -----------busqueda-----------');
   if (tcrText.isNotEmpty)
   {
-    print('---------haciendo busqueda-------------');
-    _lobReg = null;
-    await getPreviewData(tcrText).then((value) {
-
-      print('--------- en proceso-------------');
-      _resetData();
-      _lobReg = value;
-    });
+     _bloc.add(EventLoad(message: tcrText));
   }
 }
 
 /// limpiar campo de captura y el Bloc
 void _resetData()
 {
+  _bloc.add(EventCapture());
   _lobController.clear();
-  _bloc?.fcvResetData();
+  _bloc.fcvResetData();
 }
 
