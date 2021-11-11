@@ -2,7 +2,7 @@
 
 Simple application to read urls and preview the content.
 
-Data persistence and state management was performed using the Bloc pattern, rxDart.
+Data persistence and state management was performed using the Bloc pattern and rxDart.
 
 ### ⚡&ensp;Social Media
 
