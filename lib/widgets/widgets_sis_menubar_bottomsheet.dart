@@ -75,11 +75,10 @@ Widget _fobViewButtonAction(String tcrLabel,  VoidCallback tobButtonPressed)
       height: 40,
       minWidth: 70,
       color: Colors.blue,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40),),
       child: Container(
         alignment: Alignment.center,
         height: 25,
-        width: 130,
+        width: 90,
         child: Text(tcrLabel.toString(), 
           style: const TextStyle(
           color: Colors.white,
@@ -153,6 +152,7 @@ Widget _fobViewAppBarSearch(BuildContext context)
             return  Container(
               color: Colors.amber,
               width: _width*0.65,
+              //height: 45,
               padding: const EdgeInsets.only(left: 2),
               margin: const EdgeInsets.only(left: 50, top: 5, bottom: 5),
               child: TextField(
