@@ -134,7 +134,7 @@ TypeContext _getTypeUrlsWithVideo(String tcrUrl)
           tcrUrl.startsWith('https://facebook.com') || 
           tcrUrl.startsWith('https://fb.watch/')) 
   {
-    if (tcrUrl.contains('/videos/') || tcrUrl.contains('/watch/'))
+    if (tcrUrl.contains('/videos/') || tcrUrl.contains('/watch/') || tcrUrl.contains('.watch/'))
     {
       _type = TypeContext.videofacebook;
     } 
