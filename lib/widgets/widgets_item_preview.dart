@@ -47,6 +47,7 @@ Widget fobBuildPreview(BuildContext context, PreviewData tobReg)
                 child: _fobBuildPreviewCustom(tobReg, _scale*0.40),
               ),
               // Titulo
+              tobReg.title!= null ?
               Container(
                 alignment: Alignment.centerLeft,
                 color: Colors.grey[200],
@@ -57,15 +58,16 @@ Widget fobBuildPreview(BuildContext context, PreviewData tobReg)
                     fontWeight: FontWeight.bold,
                     fontSize: _scale*0.020)
                 ),
-              ),
+              ): Container(),
               // Descripción
+              tobReg.description!= null ?
               Container(
                 padding: const EdgeInsets.all(10),
                 child: Text(tobReg.description!, 
                   style: TextStyle(
                     fontSize: _scale*0.012)
                   ),
-                ),
+                ): Container(),
 
               SizedBox(height: _scale*0.014),
             ],

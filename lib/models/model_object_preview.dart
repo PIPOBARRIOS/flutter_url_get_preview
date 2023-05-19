@@ -85,8 +85,7 @@ class PreviewDataImage extends Equatable {
   });
 
   /// Creates preview data image from a map (decoded JSON).
-  factory PreviewDataImage.fromJson(Map<String, dynamic> json) =>
-      _$PreviewDataImageFromJson(json);
+  factory PreviewDataImage.fromJson(Map<String, dynamic> json) => _$PreviewDataImageFromJson(json);
 
   /// Converts preview data image to the map representation, encodable to JSON.
   Map<String, dynamic> toJson() => _$PreviewDataImageToJson(this);

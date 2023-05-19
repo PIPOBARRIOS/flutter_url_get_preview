@@ -54,6 +54,7 @@ Future<PreviewData> getPreviewData(String tcrText, {String? proxy}) async
     final response = await http.get(uri);
     final document = parser.parse(response.body);
 
+    print("body :: "+response.body);
     final imageRegexp = RegExp(lcrRegexImageContentType);
 
     //print(response.body);
@@ -132,7 +133,7 @@ TypeContext _getTypeUrlsWithVideo(String tcrUrl)
   }
   else if (tcrUrl.startsWith('https://www.facebook.com') || 
           tcrUrl.startsWith('https://facebook.com') || 
-          tcrUrl.startsWith('https://fb.watch/')) 
+          tcrUrl.startsWith('https://fb.watch/'))  // || web.facebook.com
   {
     if (tcrUrl.contains('/videos/') || tcrUrl.contains('/watch/') || tcrUrl.contains('.watch/'))
     {
